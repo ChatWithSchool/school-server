@@ -1,0 +1,4042 @@
+openapi: 3.0.3
+info:
+  title: API של מערכת ניהול פדגוגי
+  version: 0.1.0-draft
+  description: טיוטת חוזה. הנתיבים, השיטות והפרמטרים נגזרו מ-48 מסכי גרסה 1 באפיון. סכמות מפורטות מופיעות לישויות הליבה בלבד
+    (תלמיד, כיתה, מקצוע, איש צוות, התחברות). בעלת כל משאב משלימה את הסכמות שלו בספרינט 2 יחד עם ראשת הצוות, ושינוי בחוזה מתבצע
+    בפגישת ראשי הצוותות. כל endpoint מציין באילו מסכים הוא משמש (x-screens) ומי המפתחת האחראית (x-devs). דוגמת ההדרכה (announcements)
+    ממומשת בשרת ובקליינט.
+servers:
+- url: /api
+security:
+- bearerAuth: []
+paths:
+  /alerts:
+    get:
+      tags:
+      - דשבורד ומשותף
+      summary: X03 · דשבורד מנהל
+      description: 'משמש את המסכים: X03 דשבורד מנהל'
+      operationId: getalerts
+      x-screens:
+      - X03
+      x-devs:
+      - C-06
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /announcements:
+    get:
+      tags:
+      - דוגמת הדרכה
+      summary: I10 · הודעות הנהלה לצוות
+      description: 'משמש את המסכים: I10 הודעות הנהלה לצוות'
+      operationId: getannouncements
+      x-screens:
+      - I10
+      x-devs: []
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: רשימה עם עימוד
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnnouncementPage'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+      - דוגמת הדרכה
+      summary: I10 · הודעות הנהלה לצוות
+      description: 'משמש את המסכים: I10 הודעות הנהלה לצוות'
+      operationId: postannouncements
+      x-screens:
+      - I10
+      x-devs: []
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnouncementInput'
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /announcements/{id}/read:
+    post:
+      tags:
+      - דוגמת הדרכה
+      summary: I10 · הודעות הנהלה לצוות
+      description: 'משמש את המסכים: I10 הודעות הנהלה לצוות'
+      operationId: postannouncementsIdRead
+      x-screens:
+      - I10
+      x-devs: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /assessments:
+    get:
+      tags:
+      - ציונים והערכות
+      summary: G04 · ניהול מבחנים ומטלות
+      description: 'משמש את המסכים: G04 ניהול מבחנים ומטלות'
+      operationId: getassessments
+      x-screens:
+      - G04
+      x-devs:
+      - A-08
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+      - ציונים והערכות
+      summary: G04 · ניהול מבחנים ומטלות
+      description: 'משמש את המסכים: G04 ניהול מבחנים ומטלות'
+      operationId: postassessments
+      x-screens:
+      - G04
+      x-devs:
+      - A-08
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /assessments/{id}/grades:
+    get:
+      tags:
+      - ציונים והערכות
+      summary: G01 · הזנת ציונים ומשוב
+      description: 'משמש את המסכים: G01 הזנת ציונים ומשוב'
+      operationId: getassessmentsIdGrades
+      x-screens:
+      - G01
+      x-devs:
+      - A-06
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /assessments/{id}/grades/bulk:
+    put:
+      tags:
+      - ציונים והערכות
+      summary: G01 · הזנת ציונים ומשוב
+      description: 'משמש את המסכים: G01 הזנת ציונים ומשוב'
+      operationId: putassessmentsIdGradesBulk
+      x-screens:
+      - G01
+      x-devs:
+      - A-06
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /assessments/{id}/stats:
+    get:
+      tags:
+      - ציונים והערכות
+      summary: G05 · סטטיסטיקות והשוואות
+      description: 'משמש את המסכים: G05 סטטיסטיקות והשוואות'
+      operationId: getassessmentsIdStats
+      x-screens:
+      - G05
+      x-devs:
+      - A-07
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /attendance:
+    get:
+      tags:
+      - נוכחות
+      summary: N01 · סימון נוכחות יומי
+      description: 'משמש את המסכים: N01 סימון נוכחות יומי'
+      operationId: getattendance
+      x-screens:
+      - N01
+      x-devs:
+      - C-04
+      parameters:
+      - name: class
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: date
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: slot
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /attendance/alerts:
+    get:
+      tags:
+      - נוכחות
+      summary: N04 · התראות היעדרות ויומן הודעות להורים
+      description: 'משמש את המסכים: N04 התראות היעדרות ויומן הודעות להורים'
+      operationId: getattendanceAlerts
+      x-screens:
+      - N04
+      x-devs:
+      - C-05
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /attendance/bulk:
+    put:
+      tags:
+      - נוכחות
+      summary: N01 · סימון נוכחות יומי
+      description: 'משמש את המסכים: N01 סימון נוכחות יומי'
+      operationId: putattendanceBulk
+      x-screens:
+      - N01
+      x-devs:
+      - C-04
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /attendance/exceptions:
+    post:
+      tags:
+      - נוכחות
+      summary: N05 · אישורי איחור ויציאה מוקדמת
+      description: 'משמש את המסכים: N05 אישורי איחור ויציאה מוקדמת'
+      operationId: postattendanceExceptions
+      x-screens:
+      - N05
+      x-devs:
+      - C-06
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /attendance/exceptions/{id}:
+    patch:
+      tags:
+      - נוכחות
+      summary: N05 · אישורי איחור ויציאה מוקדמת
+      description: 'משמש את המסכים: N05 אישורי איחור ויציאה מוקדמת'
+      operationId: patchattendanceExceptionsId
+      x-screens:
+      - N05
+      x-devs:
+      - C-06
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /attendance/institution:
+    get:
+      tags:
+      - נוכחות
+      summary: N06 · דשבורד נוכחות מוסדי
+      description: 'משמש את המסכים: N06 דשבורד נוכחות מוסדי'
+      operationId: getattendanceInstitution
+      x-screens:
+      - N06
+      x-devs:
+      - C-05
+      parameters:
+      - name: from
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /attendance/rules:
+    put:
+      tags:
+      - נוכחות
+      summary: N04 · התראות היעדרות ויומן הודעות להורים
+      description: 'משמש את המסכים: N04 התראות היעדרות ויומן הודעות להורים'
+      operationId: putattendanceRules
+      x-screens:
+      - N04
+      x-devs:
+      - C-05
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /attendance/trend:
+    get:
+      tags:
+      - דשבורד ומשותף
+      summary: X03 · דשבורד מנהל
+      description: 'משמש את המסכים: X03 דשבורד מנהל'
+      operationId: getattendanceTrend
+      x-screens:
+      - X03
+      x-devs:
+      - C-06
+      parameters:
+      - name: days
+        in: query
+        required: false
+        schema:
+          type: integer
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /auth/forgot:
+    post:
+      tags:
+      - כניסה והחשבון שלי
+      summary: A03 · שכחתי סיסמה ואיפוס
+      description: 'משמש את המסכים: A03 שכחתי סיסמה ואיפוס'
+      operationId: postauthForgot
+      x-screens:
+      - A03
+      x-devs:
+      - C-02
+      security: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: בוצע
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /auth/login:
+    post:
+      tags:
+      - כניסה והחשבון שלי
+      summary: A01 · התחברות
+      description: 'משמש את המסכים: A01 התחברות'
+      operationId: postauthLogin
+      x-screens:
+      - A01
+      x-devs: []
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: התחברות מוצלחת
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          description: החשבון ננעל זמנית
+  /auth/logout:
+    post:
+      tags:
+      - דשבורד ומשותף
+      summary: X01 · מסגרת האפליקציה (Shell)
+      description: 'משמש את המסכים: X01 מסגרת האפליקציה (Shell)'
+      operationId: postauthLogout
+      x-screens:
+      - X01
+      x-devs: []
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /auth/me:
+    get:
+      tags:
+      - דשבורד ומשותף
+      summary: X01 · מסגרת האפליקציה (Shell)
+      description: 'משמש את המסכים: X01 מסגרת האפליקציה (Shell)'
+      operationId: getauthMe
+      x-screens:
+      - X01
+      x-devs: []
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: המשתמש המחובר וההרשאות שלו
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Me'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /auth/reset:
+    post:
+      tags:
+      - כניסה והחשבון שלי
+      summary: A03 · שכחתי סיסמה ואיפוס
+      description: 'משמש את המסכים: A03 שכחתי סיסמה ואיפוס'
+      operationId: postauthReset
+      x-screens:
+      - A03
+      x-devs:
+      - C-02
+      security: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: בוצע
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /classes:
+    get:
+      tags:
+      - תלמידים וקבוצות
+      summary: S04 · כיתות וקבוצות לימוד
+      description: 'משמש את המסכים: S04 כיתות וקבוצות לימוד'
+      operationId: getclasses
+      x-screens:
+      - S04
+      x-devs:
+      - A-03
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: רשימה עם עימוד
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassPage'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+      - תלמידים וקבוצות
+      summary: S04 · כיתות וקבוצות לימוד
+      description: 'משמש את המסכים: S04 כיתות וקבוצות לימוד'
+      operationId: postclasses
+      x-screens:
+      - S04
+      x-devs:
+      - A-03
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /classes/{id}/attendance/monthly:
+    get:
+      tags:
+      - נוכחות
+      summary: N03 · דוח נוכחות חודשי לכיתה
+      description: 'משמש את המסכים: N03 דוח נוכחות חודשי לכיתה'
+      operationId: getclassesIdAttendanceMonthly
+      x-screens:
+      - N03
+      x-devs:
+      - C-02
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /classes/{id}/attendance/monthly/export:
+    get:
+      tags:
+      - נוכחות
+      summary: N03 · דוח נוכחות חודשי לכיתה
+      description: 'משמש את המסכים: N03 דוח נוכחות חודשי לכיתה'
+      operationId: getclassesIdAttendanceMonthlyExport
+      x-screens:
+      - N03
+      x-devs:
+      - C-02
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: format
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /classes/{id}/overview:
+    get:
+      tags:
+      - תלמידים וקבוצות
+      summary: S08 · כרטיס כיתה מרוכז
+      description: 'משמש את המסכים: S08 כרטיס כיתה מרוכז'
+      operationId: getclassesIdOverview
+      x-screens:
+      - S08
+      x-devs:
+      - A-05
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /classes/{id}/teaching-assignments:
+    put:
+      tags:
+      - הגדרות
+      summary: I06 · מקצועות ושיוכי הוראה
+      description: 'משמש את המסכים: I06 מקצועות ושיוכי הוראה'
+      operationId: putclassesIdTeachingAssignments
+      x-screens:
+      - I06
+      x-devs:
+      - B-07
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /dashboard/summary:
+    get:
+      tags:
+      - דשבורד ומשותף
+      summary: X03 · דשבורד מנהל
+      description: 'משמש את המסכים: X03 דשבורד מנהל'
+      operationId: getdashboardSummary
+      x-screens:
+      - X03
+      x-devs:
+      - C-06
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /events:
+    get:
+      tags:
+      - הגדרות
+      summary: I07 · יומן אירועים בית ספרי
+      description: 'משמש את המסכים: I07 יומן אירועים בית ספרי'
+      operationId: getevents
+      x-screens:
+      - I07
+      x-devs:
+      - B-04
+      parameters:
+      - name: from
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+      - הגדרות
+      summary: I07 · יומן אירועים בית ספרי
+      description: 'משמש את המסכים: I07 יומן אירועים בית ספרי'
+      operationId: postevents
+      x-screens:
+      - I07
+      x-devs:
+      - B-04
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /grades/{id}/feedback:
+    post:
+      tags:
+      - ציונים והערכות
+      summary: G01 · הזנת ציונים ומשוב
+      description: 'משמש את המסכים: G01 הזנת ציונים ומשוב'
+      operationId: postgradesIdFeedback
+      x-screens:
+      - G01
+      x-devs:
+      - A-06
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /grades/{id}/history:
+    get:
+      tags:
+      - ציונים והערכות
+      summary: G03 · היסטוריית שינויי ציון
+      description: 'משמש את המסכים: G03 היסטוריית שינויי ציון'
+      operationId: getgradesIdHistory
+      x-screens:
+      - G03
+      x-devs:
+      - A-06
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /grading/weights:
+    get:
+      tags:
+      - ציונים והערכות
+      summary: G06 · משקלים לציון סופי
+      description: 'משמש את המסכים: G06 משקלים לציון סופי'
+      operationId: getgradingWeights
+      x-screens:
+      - G06
+      x-devs:
+      - A-09
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+      - ציונים והערכות
+      summary: G06 · משקלים לציון סופי
+      description: 'משמש את המסכים: G06 משקלים לציון סופי'
+      operationId: putgradingWeights
+      x-screens:
+      - G06
+      x-devs:
+      - A-09
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /groups:
+    get:
+      tags:
+      - תלמידים וקבוצות
+      summary: S04 · כיתות וקבוצות לימוד
+      description: 'משמש את המסכים: S04 כיתות וקבוצות לימוד'
+      operationId: getgroups
+      x-screens:
+      - S04
+      x-devs:
+      - A-03
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+      - תלמידים וקבוצות
+      summary: S04 · כיתות וקבוצות לימוד
+      description: 'משמש את המסכים: S04 כיתות וקבוצות לימוד'
+      operationId: postgroups
+      x-screens:
+      - S04
+      x-devs:
+      - A-03
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /groups/{id}/members:
+    put:
+      tags:
+      - תלמידים וקבוצות
+      summary: S04 · כיתות וקבוצות לימוד
+      description: 'משמש את המסכים: S04 כיתות וקבוצות לימוד'
+      operationId: putgroupsIdMembers
+      x-screens:
+      - S04
+      x-devs:
+      - A-03
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /institutions:
+    post:
+      tags:
+      - הגדרות
+      summary: 'I01 · אשף הקמת מוסד: מבנה בית הספר'
+      description: 'משמש את המסכים: I01 אשף הקמת מוסד: מבנה בית הספר'
+      operationId: postinstitutions
+      x-screens:
+      - I01
+      x-devs:
+      - B-04
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /institutions/{id}:
+    get:
+      tags:
+      - הגדרות
+      summary: I03 · פרטי המוסד והגדרות
+      description: 'משמש את המסכים: I03 פרטי המוסד והגדרות'
+      operationId: getinstitutionsId
+      x-screens:
+      - I03
+      x-devs:
+      - B-03
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+      - הגדרות
+      summary: I03 · פרטי המוסד והגדרות
+      description: 'משמש את המסכים: I03 פרטי המוסד והגדרות'
+      operationId: putinstitutionsId
+      x-screens:
+      - I03
+      x-devs:
+      - B-03
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /institutions/{id}/structure:
+    post:
+      tags:
+      - הגדרות
+      summary: 'I01 · אשף הקמת מוסד: מבנה בית הספר'
+      description: 'משמש את המסכים: I01 אשף הקמת מוסד: מבנה בית הספר'
+      operationId: postinstitutionsIdStructure
+      x-screens:
+      - I01
+      x-devs:
+      - B-04
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /invites:
+    get:
+      tags:
+      - הגדרות
+      summary: A07 · הזמנת משתמשים והזמנות ממתינות
+      description: 'משמש את המסכים: A07 הזמנת משתמשים והזמנות ממתינות'
+      operationId: getinvites
+      x-screens:
+      - A07
+      x-devs:
+      - B-01
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+      - הגדרות
+      summary: A07 · הזמנת משתמשים והזמנות ממתינות
+      description: 'משמש את המסכים: A07 הזמנת משתמשים והזמנות ממתינות'
+      operationId: postinvites
+      x-screens:
+      - A07
+      x-devs:
+      - B-01
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /invites/{id}:
+    delete:
+      tags:
+      - הגדרות
+      summary: A07 · הזמנת משתמשים והזמנות ממתינות
+      description: 'משמש את המסכים: A07 הזמנת משתמשים והזמנות ממתינות'
+      operationId: deleteinvitesId
+      x-screens:
+      - A07
+      x-devs:
+      - B-01
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /invites/{token}:
+    get:
+      tags:
+      - כניסה והחשבון שלי
+      summary: A02 · הצטרפות בהזמנה (הגדרת חשבון)
+      description: 'משמש את המסכים: A02 הצטרפות בהזמנה (הגדרת חשבון)'
+      operationId: getinvitesToken
+      x-screens:
+      - A02
+      x-devs:
+      - B-01
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+      security: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /invites/{token}/accept:
+    post:
+      tags:
+      - כניסה והחשבון שלי
+      summary: A02 · הצטרפות בהזמנה (הגדרת חשבון)
+      description: 'משמש את המסכים: A02 הצטרפות בהזמנה (הגדרת חשבון)'
+      operationId: postinvitesTokenAccept
+      x-screens:
+      - A02
+      x-devs:
+      - B-01
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+      security: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: בוצע
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /lessons:
+    delete:
+      tags:
+      - מערכת שעות
+      summary: T02 · עריכת מערכת שעות
+      description: 'משמש את המסכים: T02 עריכת מערכת שעות'
+      operationId: deletelessons
+      x-screens:
+      - T02
+      x-devs:
+      - B-06
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    get:
+      tags:
+      - מערכת שעות
+      summary: T02 · עריכת מערכת שעות
+      description: 'משמש את המסכים: T02 עריכת מערכת שעות'
+      operationId: getlessons
+      x-screens:
+      - T02
+      x-devs:
+      - B-06
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+      - מערכת שעות
+      summary: T02 · עריכת מערכת שעות
+      description: 'משמש את המסכים: T02 עריכת מערכת שעות'
+      operationId: postlessons
+      x-screens:
+      - T02
+      x-devs:
+      - B-06
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+      - מערכת שעות
+      summary: T02 · עריכת מערכת שעות
+      description: 'משמש את המסכים: T02 עריכת מערכת שעות'
+      operationId: putlessons
+      x-screens:
+      - T02
+      x-devs:
+      - B-06
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /lessons/validate:
+    post:
+      tags:
+      - מערכת שעות
+      summary: T02 · עריכת מערכת שעות
+      description: 'משמש את המסכים: T02 עריכת מערכת שעות'
+      operationId: postlessonsValidate
+      x-screens:
+      - T02
+      x-devs:
+      - B-06
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: בוצע
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /lessons/{id}/substitute:
+    post:
+      tags:
+      - מערכת שעות
+      summary: T03 · ממלא מקום ומורים זמינים
+      description: 'משמש את המסכים: T03 ממלא מקום ומורים זמינים'
+      operationId: postlessonsIdSubstitute
+      x-screens:
+      - T03
+      x-devs:
+      - B-08
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: בוצע
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /me/2fa/enable:
+    post:
+      tags:
+      - כניסה והחשבון שלי
+      summary: A06 · אבטחת החשבון שלי
+      description: 'משמש את המסכים: A06 אבטחת החשבון שלי'
+      operationId: postme2faEnable
+      x-screens:
+      - A06
+      x-devs:
+      - C-01
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: בוצע
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /me/activity:
+    get:
+      tags:
+      - כניסה והחשבון שלי
+      summary: A06 · אבטחת החשבון שלי
+      description: 'משמש את המסכים: A06 אבטחת החשבון שלי'
+      operationId: getmeActivity
+      x-screens:
+      - A06
+      x-devs:
+      - C-01
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /me/permissions:
+    get:
+      tags:
+      - כניסה והחשבון שלי
+      summary: A05 · ההרשאות שלי
+      description: 'משמש את המסכים: A05 ההרשאות שלי'
+      operationId: getmePermissions
+      x-screens:
+      - A05
+      x-devs:
+      - C-01
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /me/sessions:
+    get:
+      tags:
+      - כניסה והחשבון שלי
+      summary: A06 · אבטחת החשבון שלי
+      description: 'משמש את המסכים: A06 אבטחת החשבון שלי'
+      operationId: getmeSessions
+      x-screens:
+      - A06
+      x-devs:
+      - C-01
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /me/sessions/{id}:
+    delete:
+      tags:
+      - כניסה והחשבון שלי
+      summary: A06 · אבטחת החשבון שלי
+      description: 'משמש את המסכים: A06 אבטחת החשבון שלי'
+      operationId: deletemeSessionsId
+      x-screens:
+      - A06
+      x-devs:
+      - C-01
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /me/teaching:
+    get:
+      tags:
+      - ציונים והערכות
+      summary: G08 · המקצועות שלי (מורה)
+      description: 'משמש את המסכים: G08 המקצועות שלי (מורה)'
+      operationId: getmeTeaching
+      x-screens:
+      - G08
+      x-devs:
+      - A-08
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /me/today:
+    get:
+      tags:
+      - מערכת שעות
+      summary: T06 · היום שלי (מורה)
+      description: 'משמש את המסכים: T06 היום שלי (מורה)'
+      operationId: getmeToday
+      x-screens:
+      - T06
+      x-devs:
+      - B-08
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /notifications/log:
+    get:
+      tags:
+      - נוכחות
+      summary: N04 · התראות היעדרות ויומן הודעות להורים
+      description: 'משמש את המסכים: N04 התראות היעדרות ויומן הודעות להורים'
+      operationId: getnotificationsLog
+      x-screens:
+      - N04
+      x-devs:
+      - C-05
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /reports/transcript/{studentId}:
+    get:
+      tags:
+      - ציונים והערכות
+      summary: G07 · הפקת תעודות
+      description: 'משמש את המסכים: G07 הפקת תעודות'
+      operationId: getreportsTranscriptStudentid
+      x-screens:
+      - G07
+      x-devs:
+      - A-09
+      parameters:
+      - name: studentId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: term
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /reports/transcripts/bulk:
+    post:
+      tags:
+      - ציונים והערכות
+      summary: G07 · הפקת תעודות
+      description: 'משמש את המסכים: G07 הפקת תעודות'
+      operationId: postreportsTranscriptsBulk
+      x-screens:
+      - G07
+      x-devs:
+      - A-09
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: בוצע
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /roles:
+    get:
+      tags:
+      - הגדרות
+      summary: A09 · תפקידים מותאמים ופרטיות
+      description: 'משמש את המסכים: A09 תפקידים מותאמים ופרטיות'
+      operationId: getroles
+      x-screens:
+      - A09
+      x-devs:
+      - B-02
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+      - הגדרות
+      summary: A09 · תפקידים מותאמים ופרטיות
+      description: 'משמש את המסכים: A09 תפקידים מותאמים ופרטיות'
+      operationId: postroles
+      x-screens:
+      - A09
+      x-devs:
+      - B-02
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /roles/{id}/permissions:
+    put:
+      tags:
+      - הגדרות
+      summary: A09 · תפקידים מותאמים ופרטיות
+      description: 'משמש את המסכים: A09 תפקידים מותאמים ופרטיות'
+      operationId: putrolesIdPermissions
+      x-screens:
+      - A09
+      x-devs:
+      - B-02
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /rooms:
+    get:
+      tags:
+      - הגדרות
+      summary: I08 · חדרים ומשאבים
+      description: 'משמש את המסכים: I08 חדרים ומשאבים'
+      operationId: getrooms
+      x-screens:
+      - I08
+      x-devs:
+      - B-05
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+      - הגדרות
+      summary: I08 · חדרים ומשאבים
+      description: 'משמש את המסכים: I08 חדרים ומשאבים'
+      operationId: postrooms
+      x-screens:
+      - I08
+      x-devs:
+      - B-05
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /schedule:
+    get:
+      tags:
+      - מערכת שעות
+      summary: T01 · מערכת שעות שבועית (תצוגות)
+      description: 'משמש את המסכים: T01 מערכת שעות שבועית (תצוגות)'
+      operationId: getschedule
+      x-screens:
+      - T01
+      x-devs:
+      - B-05
+      parameters:
+      - name: view
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: week
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /schedule/export.pdf:
+    get:
+      tags:
+      - מערכת שעות
+      summary: T01 · מערכת שעות שבועית (תצוגות)
+      description: 'משמש את המסכים: T01 מערכת שעות שבועית (תצוגות)'
+      operationId: getscheduleExport.pdf
+      x-screens:
+      - T01
+      x-devs:
+      - B-05
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /schedule/import/commit:
+    post:
+      tags:
+      - מערכת שעות
+      summary: T04 · ייבוא וייצוא מערכת שעות
+      description: 'משמש את המסכים: T04 ייבוא וייצוא מערכת שעות'
+      operationId: postscheduleImportCommit
+      x-screens:
+      - T04
+      x-devs:
+      - B-07
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: בוצע
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /schedule/import/validate:
+    post:
+      tags:
+      - מערכת שעות
+      summary: T04 · ייבוא וייצוא מערכת שעות
+      description: 'משמש את המסכים: T04 ייבוא וייצוא מערכת שעות'
+      operationId: postscheduleImportValidate
+      x-screens:
+      - T04
+      x-devs:
+      - B-07
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: בוצע
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /schedule/publish:
+    post:
+      tags:
+      - מערכת שעות
+      summary: T02 · עריכת מערכת שעות
+      description: 'משמש את המסכים: T02 עריכת מערכת שעות'
+      operationId: postschedulePublish
+      x-screens:
+      - T02
+      x-devs:
+      - B-06
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: בוצע
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /schedule/template:
+    get:
+      tags:
+      - מערכת שעות
+      summary: T04 · ייבוא וייצוא מערכת שעות
+      description: 'משמש את המסכים: T04 ייבוא וייצוא מערכת שעות'
+      operationId: getscheduleTemplate
+      x-screens:
+      - T04
+      x-devs:
+      - B-07
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /search:
+    get:
+      tags:
+      - תלמידים וקבוצות
+      summary: S09 · תוצאות חיפוש גלובלי
+      description: 'משמש את המסכים: S09 תוצאות חיפוש גלובלי'
+      operationId: getsearch
+      x-screens:
+      - S09
+      x-devs:
+      - A-05
+      parameters:
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: types
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /settings/visibility:
+    get:
+      tags:
+      - הגדרות
+      summary: A09 · תפקידים מותאמים ופרטיות
+      description: 'משמש את המסכים: A09 תפקידים מותאמים ופרטיות'
+      operationId: getsettingsVisibility
+      x-screens:
+      - A09
+      x-devs:
+      - B-02
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /staff:
+    get:
+      tags:
+      - צוות
+      summary: I04 · צוות בית הספר
+      description: 'משמש את המסכים: I04 צוות בית הספר'
+      operationId: getstaff
+      x-screens:
+      - I04
+      x-devs:
+      - C-03
+      parameters:
+      - name: role
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: subject
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: רשימה עם עימוד
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffPage'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+      - צוות
+      summary: I04 · צוות בית הספר
+      description: 'משמש את המסכים: I04 צוות בית הספר'
+      operationId: poststaff
+      x-screens:
+      - I04
+      x-devs:
+      - C-03
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /staff/available:
+    get:
+      tags:
+      - מערכת שעות
+      summary: T03 · ממלא מקום ומורים זמינים
+      description: 'משמש את המסכים: T03 ממלא מקום ומורים זמינים'
+      operationId: getstaffAvailable
+      x-screens:
+      - T03
+      x-devs:
+      - B-08
+      parameters:
+      - name: date
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: slot
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /staff/import/commit:
+    post:
+      tags:
+      - צוות
+      summary: I02 · ייבוא צוות הוראה מקובץ
+      description: 'משמש את המסכים: I02 ייבוא צוות הוראה מקובץ'
+      operationId: poststaffImportCommit
+      x-screens:
+      - I02
+      x-devs:
+      - C-03
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: בוצע
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /staff/import/validate:
+    post:
+      tags:
+      - צוות
+      summary: I02 · ייבוא צוות הוראה מקובץ
+      description: 'משמש את המסכים: I02 ייבוא צוות הוראה מקובץ'
+      operationId: poststaffImportValidate
+      x-screens:
+      - I02
+      x-devs:
+      - C-03
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: בוצע
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /staff/{id}:
+    get:
+      tags:
+      - צוות
+      summary: I05 · פרופיל מורה
+      description: 'משמש את המסכים: I05 פרופיל מורה'
+      operationId: getstaffId
+      x-screens:
+      - I05
+      x-devs:
+      - B-06
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags:
+      - צוות
+      summary: I04 · צוות בית הספר
+      description: 'משמש את המסכים: I04 צוות בית הספר, I05 פרופיל מורה'
+      operationId: patchstaffId
+      x-screens:
+      - I04
+      - I05
+      x-devs:
+      - B-06
+      - C-03
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /stats/compare:
+    get:
+      tags:
+      - ציונים והערכות
+      summary: G05 · סטטיסטיקות והשוואות
+      description: 'משמש את המסכים: G05 סטטיסטיקות והשוואות'
+      operationId: getstatsCompare
+      x-screens:
+      - G05
+      x-devs:
+      - A-07
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /students:
+    get:
+      tags:
+      - תלמידים וקבוצות
+      summary: S01 · רשימת תלמידים
+      description: 'משמש את המסכים: S01 רשימת תלמידים'
+      operationId: getstudents
+      x-screens:
+      - S01
+      x-devs:
+      - A-01
+      parameters:
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: class
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: tag
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: רשימה עם עימוד
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentPage'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+      - תלמידים וקבוצות
+      summary: S02 · טופס תלמיד (הוספה ועריכה)
+      description: 'משמש את המסכים: S02 טופס תלמיד (הוספה ועריכה)'
+      operationId: poststudents
+      x-screens:
+      - S02
+      x-devs:
+      - A-01
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentInput'
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /students/bulk:
+    post:
+      tags:
+      - תלמידים וקבוצות
+      summary: S10 · פעולות קבוצתיות
+      description: 'משמש את המסכים: S10 פעולות קבוצתיות'
+      operationId: poststudentsBulk
+      x-screens:
+      - S10
+      x-devs:
+      - A-03
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: בוצע
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /students/check-duplicate:
+    get:
+      tags:
+      - תלמידים וקבוצות
+      summary: S02 · טופס תלמיד (הוספה ועריכה)
+      description: 'משמש את המסכים: S02 טופס תלמיד (הוספה ועריכה)'
+      operationId: getstudentsCheckDuplicate
+      x-screens:
+      - S02
+      x-devs:
+      - A-01
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /students/import/commit:
+    post:
+      tags:
+      - תלמידים וקבוצות
+      summary: S05 · ייבוא תלמידים מקובץ
+      description: 'משמש את המסכים: S05 ייבוא תלמידים מקובץ'
+      operationId: poststudentsImportCommit
+      x-screens:
+      - S05
+      x-devs:
+      - A-04
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: בוצע
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /students/import/validate:
+    post:
+      tags:
+      - תלמידים וקבוצות
+      summary: S05 · ייבוא תלמידים מקובץ
+      description: 'משמש את המסכים: S05 ייבוא תלמידים מקובץ'
+      operationId: poststudentsImportValidate
+      x-screens:
+      - S05
+      x-devs:
+      - A-04
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: בוצע
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /students/{id}:
+    get:
+      tags:
+      - תלמידים וקבוצות
+      summary: S03 · כרטיס תלמיד
+      description: 'משמש את המסכים: S03 כרטיס תלמיד'
+      operationId: getstudentsId
+      x-screens:
+      - S03
+      x-devs:
+      - A-02
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: כרטיס תלמיד
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+      - תלמידים וקבוצות
+      summary: S02 · טופס תלמיד (הוספה ועריכה)
+      description: 'משמש את המסכים: S02 טופס תלמיד (הוספה ועריכה)'
+      operationId: putstudentsId
+      x-screens:
+      - S02
+      x-devs:
+      - A-01
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentInput'
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /students/{id}/attendance:
+    get:
+      tags:
+      - נוכחות
+      summary: N02 · היסטוריית נוכחות של תלמיד
+      description: 'משמש את המסכים: N02 היסטוריית נוכחות של תלמיד'
+      operationId: getstudentsIdAttendance
+      x-screens:
+      - N02
+      x-devs:
+      - C-04
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /students/{id}/grades:
+    get:
+      tags:
+      - ציונים והערכות
+      summary: G02 · גיליון ציונים של תלמיד
+      description: 'משמש את המסכים: G02 גיליון ציונים של תלמיד'
+      operationId: getstudentsIdGrades
+      x-screens:
+      - G02
+      x-devs:
+      - A-07
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: term
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /students/{id}/guardians:
+    post:
+      tags:
+      - הגדרות
+      summary: A08 · קישור הורה לתלמיד
+      description: 'משמש את המסכים: A08 קישור הורה לתלמיד'
+      operationId: poststudentsIdGuardians
+      x-screens:
+      - A08
+      x-devs:
+      - B-03
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /students/{id}/guardians/{gid}:
+    delete:
+      tags:
+      - הגדרות
+      summary: A08 · קישור הורה לתלמיד
+      description: 'משמש את המסכים: A08 קישור הורה לתלמיד'
+      operationId: deletestudentsIdGuardiansGid
+      x-screens:
+      - A08
+      x-devs:
+      - B-03
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: gid
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /students/{id}/notes:
+    get:
+      tags:
+      - תלמידים וקבוצות
+      summary: S06 · הערות התנהגות
+      description: 'משמש את המסכים: S06 הערות התנהגות'
+      operationId: getstudentsIdNotes
+      x-screens:
+      - S06
+      x-devs:
+      - A-02
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+      - תלמידים וקבוצות
+      summary: S06 · הערות התנהגות
+      description: 'משמש את המסכים: S06 הערות התנהגות'
+      operationId: poststudentsIdNotes
+      x-screens:
+      - S06
+      x-devs:
+      - A-02
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /students/{id}/summary:
+    get:
+      tags:
+      - תלמידים וקבוצות
+      summary: S03 · כרטיס תלמיד
+      description: 'משמש את המסכים: S03 כרטיס תלמיד'
+      operationId: getstudentsIdSummary
+      x-screens:
+      - S03
+      x-devs:
+      - A-02
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /students/{id}/tags:
+    post:
+      tags:
+      - תלמידים וקבוצות
+      summary: S03 · כרטיס תלמיד
+      description: 'משמש את המסכים: S03 כרטיס תלמיד'
+      operationId: poststudentsIdTags
+      x-screens:
+      - S03
+      x-devs:
+      - A-02
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /students/{id}/transfer:
+    post:
+      tags:
+      - תלמידים וקבוצות
+      summary: S07 · העברת תלמיד בין כיתות
+      description: 'משמש את המסכים: S07 העברת תלמיד בין כיתות'
+      operationId: poststudentsIdTransfer
+      x-screens:
+      - S07
+      x-devs:
+      - A-04
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /subjects:
+    get:
+      tags:
+      - הגדרות
+      summary: I06 · מקצועות ושיוכי הוראה
+      description: 'משמש את המסכים: I06 מקצועות ושיוכי הוראה'
+      operationId: getsubjects
+      x-screens:
+      - I06
+      x-devs:
+      - B-07
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: רשימה עם עימוד
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubjectPage'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+      - הגדרות
+      summary: I06 · מקצועות ושיוכי הוראה
+      description: 'משמש את המסכים: I06 מקצועות ושיוכי הוראה'
+      operationId: postsubjects
+      x-screens:
+      - I06
+      x-devs:
+      - B-07
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /terms:
+    post:
+      tags:
+      - הגדרות
+      summary: I03 · פרטי המוסד והגדרות
+      description: 'משמש את המסכים: I03 פרטי המוסד והגדרות'
+      operationId: postterms
+      x-screens:
+      - I03
+      x-devs:
+      - B-03
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: נוצר
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /users:
+    get:
+      tags:
+      - הגדרות
+      summary: A04 · ניהול משתמשים והרשאות
+      description: 'משמש את המסכים: A04 ניהול משתמשים והרשאות'
+      operationId: getusers
+      x-screens:
+      - A04
+      x-devs:
+      - B-02
+      parameters:
+      - name: role
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /users/{id}:
+    patch:
+      tags:
+      - הגדרות
+      summary: A04 · ניהול משתמשים והרשאות
+      description: 'משמש את המסכים: A04 ניהול משתמשים והרשאות'
+      operationId: patchusersId
+      x-screens:
+      - A04
+      x-devs:
+      - B-02
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /users/{id}/deactivate:
+    post:
+      tags:
+      - הגדרות
+      summary: A04 · ניהול משתמשים והרשאות
+      description: 'משמש את המסכים: A04 ניהול משתמשים והרשאות'
+      operationId: postusersIdDeactivate
+      x-screens:
+      - A04
+      x-devs:
+      - B-02
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '204':
+          description: בוצע
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code: &id001
+              type: string
+            message: *id001
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: *id001
+                  message: *id001
+          required:
+          - code
+          - message
+      required:
+      - error
+    Page:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+        total:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+      required:
+      - items
+      - total
+      - page
+      - size
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password: *id001
+      required:
+      - email
+      - password
+    LoginResponse:
+      type: object
+      properties:
+        token: *id001
+        landing:
+          type: string
+          description: מזהה המסך שאליו מנותבים אחרי ההתחברות, למשל X03
+      required:
+      - token
+      - landing
+    Me:
+      type: object
+      properties:
+        user:
+          type: object
+          properties:
+            id: *id001
+            firstName: *id001
+            lastName: *id001
+            email: *id001
+            roles:
+              type: array
+              items: *id001
+        permissions:
+          type: object
+          additionalProperties:
+            type: string
+            enum:
+            - full
+            - scoped
+            - read
+          description: מזהה מסך ורמת גישה
+        landing: *id001
+    Guardian:
+      type: object
+      properties:
+        name: *id001
+        relation: *id001
+        phone: *id001
+        email: *id001
+        userId: *id001
+      required:
+      - name
+    Student:
+      type: object
+      properties:
+        id: *id001
+        firstName: *id001
+        lastName: *id001
+        nationalId: *id001
+        birthDate:
+          type: string
+          format: date
+        classId: *id001
+        guardians:
+          type: array
+          items:
+            $ref: '#/components/schemas/Guardian'
+        address: *id001
+        notes: *id001
+        tags:
+          type: array
+          items: *id001
+        status:
+          type: string
+          enum:
+          - active
+          - inactive
+      required:
+      - id
+      - firstName
+      - lastName
+      - nationalId
+    StudentInput:
+      type: object
+      properties:
+        firstName: *id001
+        lastName: *id001
+        nationalId:
+          type: string
+          description: תעודת זהות תקינה (ספרת ביקורת) ויחידה במוסד
+        birthDate:
+          type: string
+          format: date
+        classId: *id001
+        guardians:
+          type: array
+          items:
+            $ref: '#/components/schemas/Guardian'
+        address: *id001
+        notes: *id001
+        tags:
+          type: array
+          items: *id001
+      required:
+      - firstName
+      - lastName
+      - nationalId
+      - classId
+    SchoolClass:
+      type: object
+      properties:
+        id: *id001
+        name: *id001
+        grade: *id001
+        homeroomTeacherId: *id001
+        studentCount:
+          type: integer
+      required:
+      - id
+      - name
+      - grade
+    Subject:
+      type: object
+      properties:
+        id: *id001
+        name: *id001
+        code: *id001
+        grades:
+          type: array
+          items: *id001
+      required:
+      - id
+      - name
+      - code
+    StaffMember:
+      type: object
+      properties:
+        id: *id001
+        firstName: *id001
+        lastName: *id001
+        email: *id001
+        roles:
+          type: array
+          items: *id001
+        status: *id001
+        subjectIds:
+          type: array
+          items: *id001
+        classIds:
+          type: array
+          items: *id001
+      required:
+      - id
+      - firstName
+      - lastName
+    Announcement:
+      type: object
+      properties:
+        id: *id001
+        title: *id001
+        body: *id001
+        audience:
+          type: string
+          enum:
+          - all
+          - staff
+        pinned:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        read:
+          type: boolean
+      required:
+      - id
+      - title
+      - body
+    AnnouncementInput:
+      type: object
+      properties:
+        title: *id001
+        body: *id001
+        audience:
+          type: string
+          enum:
+          - all
+          - staff
+        pinned:
+          type: boolean
+      required:
+      - title
+      - body
+    StudentPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Student'
+        total:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+      required:
+      - items
+      - total
+      - page
+      - size
+    ClassPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchoolClass'
+        total:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+      required:
+      - items
+      - total
+      - page
+      - size
+    SubjectPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subject'
+        total:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+      required:
+      - items
+      - total
+      - page
+      - size
+    StaffPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffMember'
+        total:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+      required:
+      - items
+      - total
+      - page
+      - size
+    AnnouncementPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Announcement'
+        total:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+      required:
+      - items
+      - total
+      - page
+      - size
+  responses:
+    ValidationError:
+      description: הנתונים שנשלחו אינם תקינים (VALIDATION_ERROR)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: לא מחוברת או שההתחברות פגה (UNAUTHENTICATED, INVALID_TOKEN)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: אין הרשאה (FORBIDDEN) או צפייה בלבד (READ_ONLY)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: לא נמצא (NOT_FOUND)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

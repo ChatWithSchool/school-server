@@ -1,0 +1,575 @@
+{
+  "_readme": "Screen-level permission matrix for JWT authorization. Levels: full = full access, scoped = only the user's own classes, subjects or children, read = view only. Missing role = no access. A resource/action level (view, create, update, delete) can be derived from the level and refined per endpoint.",
+  "roles": [
+    {
+      "key": "management",
+      "name": "הנהלה",
+      "landing": "X03"
+    },
+    {
+      "key": "coordinator",
+      "name": "רכז/ת",
+      "landing": "—"
+    },
+    {
+      "key": "secretary",
+      "name": "מזכירות",
+      "landing": "S01"
+    },
+    {
+      "key": "homeroom",
+      "name": "מחנך/ת",
+      "landing": "T06"
+    },
+    {
+      "key": "teacher",
+      "name": "מורה מקצועי",
+      "landing": "T06"
+    },
+    {
+      "key": "parent",
+      "name": "הורה",
+      "landing": "S03"
+    },
+    {
+      "key": "student",
+      "name": "תלמיד",
+      "landing": "G02"
+    }
+  ],
+  "levels": {
+    "full": "גישה מלאה",
+    "scoped": "מוגבל לכיתות, מקצועות או ילדים של המשתמש",
+    "read": "צפייה בלבד"
+  },
+  "routing": [
+    {
+      "condition": "פרטי הכניסה שגויים",
+      "result": "הודעת שגיאה אחידה ליד הטופס. אחרי 5 ניסיונות כושלים: נעילה זמנית עם הודעה ברורה.",
+      "screen": "A01"
+    },
+    {
+      "condition": "הוזמן ולא השלים הגדרת חשבון",
+      "result": "מסך הגדרת חשבון מהקישור. קישור שפג או נוצל מציג הסבר.",
+      "screen": "A02"
+    },
+    {
+      "condition": "שכח סיסמה",
+      "result": "בקשת קישור איפוס והגדרת סיסמה חדשה. ההודעה זהה גם כשהמייל לא קיים.",
+      "screen": "A03"
+    },
+    {
+      "condition": "הנהלה, וההקמה לא הושלמה",
+      "result": "חזרה לאשף ההקמה בשלב האחרון שנשמר.",
+      "screen": "W01 עד W05"
+    },
+    {
+      "condition": "הנהלה",
+      "result": "דשבורד הנהלה.",
+      "screen": "X03"
+    },
+    {
+      "condition": "מזכירות",
+      "result": "רשימת תלמידים.",
+      "screen": "S01"
+    },
+    {
+      "condition": "מחנך/ת או מורה מקצועי",
+      "result": "היום שלי.",
+      "screen": "T06"
+    },
+    {
+      "condition": "הורה עם ילד אחד",
+      "result": "כרטיס הילד במובייל.",
+      "screen": "S03"
+    },
+    {
+      "condition": "הורה עם כמה ילדים",
+      "result": "כרטיס הילד במובייל, עם בורר ילדים בראש המסך.",
+      "screen": "S03"
+    },
+    {
+      "condition": "תלמיד, ותצוגת תלמידים הופעלה במוסד",
+      "result": "גיליון הציונים.",
+      "screen": "G02"
+    },
+    {
+      "condition": "תלמיד, ותצוגת תלמידים כבויה",
+      "result": "מסך אין הרשאה עם הסבר ופנייה למנהל/ת.",
+      "screen": "X02"
+    },
+    {
+      "condition": "משתמש מושבת, או בלי תפקיד במוסד",
+      "result": "מסך אין הרשאה עם קישור ל\"ההרשאות שלי\".",
+      "screen": "X02 / A05"
+    },
+    {
+      "condition": "משתמש עם כמה תפקידים",
+      "result": "ההרשאות מצטברות. הנחיתה לפי העדיפות: הנהלה, מזכירות, מחנך/מורה, הורה.",
+      "screen": "לפי העדיפות"
+    }
+  ],
+  "screens": {
+    "A01": {
+      "name": "התחברות",
+      "module": "כניסה והחשבון שלי",
+      "access": {
+        "management": "full",
+        "coordinator": "full",
+        "secretary": "full",
+        "homeroom": "full",
+        "teacher": "full",
+        "parent": "full",
+        "student": "full"
+      }
+    },
+    "A02": {
+      "name": "הצטרפות בהזמנה (הגדרת חשבון)",
+      "module": "כניסה והחשבון שלי",
+      "access": {
+        "management": "full",
+        "coordinator": "full",
+        "secretary": "full",
+        "homeroom": "full",
+        "teacher": "full",
+        "parent": "full",
+        "student": "full"
+      }
+    },
+    "A03": {
+      "name": "שכחתי סיסמה ואיפוס",
+      "module": "כניסה והחשבון שלי",
+      "access": {
+        "management": "full",
+        "coordinator": "full",
+        "secretary": "full",
+        "homeroom": "full",
+        "teacher": "full",
+        "parent": "full",
+        "student": "full"
+      }
+    },
+    "A04": {
+      "name": "ניהול משתמשים והרשאות",
+      "module": "הגדרות",
+      "access": {
+        "management": "full"
+      }
+    },
+    "A05": {
+      "name": "ההרשאות שלי",
+      "module": "כניסה והחשבון שלי",
+      "access": {
+        "management": "full",
+        "coordinator": "full",
+        "secretary": "full",
+        "homeroom": "full",
+        "teacher": "full",
+        "parent": "full",
+        "student": "full"
+      }
+    },
+    "A06": {
+      "name": "אבטחת החשבון שלי",
+      "module": "כניסה והחשבון שלי",
+      "access": {
+        "management": "full",
+        "coordinator": "full",
+        "secretary": "full",
+        "homeroom": "full",
+        "teacher": "full",
+        "parent": "full",
+        "student": "full"
+      }
+    },
+    "A07": {
+      "name": "הזמנת משתמשים והזמנות ממתינות",
+      "module": "הגדרות",
+      "access": {
+        "management": "full"
+      }
+    },
+    "A08": {
+      "name": "קישור הורה לתלמיד",
+      "module": "הגדרות",
+      "access": {
+        "management": "full",
+        "secretary": "full"
+      }
+    },
+    "A09": {
+      "name": "תפקידים מותאמים ופרטיות",
+      "module": "הגדרות",
+      "access": {
+        "management": "full"
+      }
+    },
+    "G01": {
+      "name": "הזנת ציונים ומשוב",
+      "module": "ציונים והערכות",
+      "access": {
+        "management": "read",
+        "homeroom": "scoped",
+        "teacher": "scoped"
+      }
+    },
+    "G02": {
+      "name": "גיליון ציונים של תלמיד",
+      "module": "ציונים והערכות",
+      "access": {
+        "management": "full",
+        "homeroom": "scoped",
+        "teacher": "scoped",
+        "parent": "scoped",
+        "student": "scoped"
+      }
+    },
+    "G03": {
+      "name": "היסטוריית שינויי ציון",
+      "module": "ציונים והערכות",
+      "access": {
+        "management": "full",
+        "teacher": "scoped"
+      }
+    },
+    "G04": {
+      "name": "ניהול מבחנים ומטלות",
+      "module": "ציונים והערכות",
+      "access": {
+        "management": "full",
+        "homeroom": "scoped",
+        "teacher": "scoped"
+      }
+    },
+    "G05": {
+      "name": "סטטיסטיקות והשוואות",
+      "module": "ציונים והערכות",
+      "access": {
+        "management": "full",
+        "homeroom": "scoped",
+        "teacher": "scoped"
+      }
+    },
+    "G06": {
+      "name": "משקלים לציון סופי",
+      "module": "ציונים והערכות",
+      "access": {
+        "management": "full",
+        "coordinator": "full"
+      }
+    },
+    "G07": {
+      "name": "הפקת תעודות",
+      "module": "ציונים והערכות",
+      "access": {
+        "management": "full",
+        "homeroom": "scoped"
+      }
+    },
+    "G08": {
+      "name": "המקצועות שלי (מורה)",
+      "module": "ציונים והערכות",
+      "access": {
+        "homeroom": "full",
+        "teacher": "full"
+      }
+    },
+    "I01": {
+      "name": "אשף הקמת מוסד: מבנה בית הספר",
+      "module": "הגדרות",
+      "access": {
+        "management": "full"
+      }
+    },
+    "I02": {
+      "name": "ייבוא צוות הוראה מקובץ",
+      "module": "צוות",
+      "access": {
+        "management": "full"
+      }
+    },
+    "I03": {
+      "name": "פרטי המוסד והגדרות",
+      "module": "הגדרות",
+      "access": {
+        "management": "full"
+      }
+    },
+    "I04": {
+      "name": "צוות בית הספר",
+      "module": "צוות",
+      "access": {
+        "management": "full",
+        "secretary": "read"
+      }
+    },
+    "I05": {
+      "name": "פרופיל מורה",
+      "module": "צוות",
+      "access": {
+        "management": "full",
+        "homeroom": "scoped",
+        "teacher": "scoped"
+      }
+    },
+    "I06": {
+      "name": "מקצועות ושיוכי הוראה",
+      "module": "הגדרות",
+      "access": {
+        "management": "full",
+        "coordinator": "full"
+      }
+    },
+    "I07": {
+      "name": "יומן אירועים בית ספרי",
+      "module": "הגדרות",
+      "access": {
+        "management": "full",
+        "coordinator": "read",
+        "secretary": "read",
+        "homeroom": "read",
+        "teacher": "read"
+      }
+    },
+    "I08": {
+      "name": "חדרים ומשאבים",
+      "module": "הגדרות",
+      "access": {
+        "management": "full",
+        "coordinator": "full"
+      }
+    },
+    "N01": {
+      "name": "סימון נוכחות יומי",
+      "module": "נוכחות",
+      "access": {
+        "management": "full",
+        "homeroom": "scoped",
+        "teacher": "scoped"
+      }
+    },
+    "N02": {
+      "name": "היסטוריית נוכחות של תלמיד",
+      "module": "נוכחות",
+      "access": {
+        "management": "full",
+        "secretary": "read",
+        "homeroom": "scoped",
+        "parent": "scoped",
+        "student": "scoped"
+      }
+    },
+    "N03": {
+      "name": "דוח נוכחות חודשי לכיתה",
+      "module": "נוכחות",
+      "access": {
+        "management": "full",
+        "secretary": "read",
+        "homeroom": "scoped"
+      }
+    },
+    "N04": {
+      "name": "התראות היעדרות ויומן הודעות להורים",
+      "module": "נוכחות",
+      "access": {
+        "management": "full",
+        "homeroom": "scoped"
+      }
+    },
+    "N05": {
+      "name": "אישורי איחור ויציאה מוקדמת",
+      "module": "נוכחות",
+      "access": {
+        "management": "full",
+        "secretary": "full",
+        "homeroom": "scoped"
+      }
+    },
+    "N06": {
+      "name": "דשבורד נוכחות מוסדי",
+      "module": "נוכחות",
+      "access": {
+        "management": "full"
+      }
+    },
+    "S01": {
+      "name": "רשימת תלמידים",
+      "module": "תלמידים וקבוצות",
+      "access": {
+        "management": "full",
+        "secretary": "full",
+        "homeroom": "scoped",
+        "teacher": "scoped"
+      }
+    },
+    "S02": {
+      "name": "טופס תלמיד (הוספה ועריכה)",
+      "module": "תלמידים וקבוצות",
+      "access": {
+        "management": "full",
+        "secretary": "full"
+      }
+    },
+    "S03": {
+      "name": "כרטיס תלמיד",
+      "module": "תלמידים וקבוצות",
+      "access": {
+        "management": "full",
+        "secretary": "full",
+        "homeroom": "scoped",
+        "teacher": "scoped",
+        "parent": "scoped"
+      }
+    },
+    "S04": {
+      "name": "כיתות וקבוצות לימוד",
+      "module": "תלמידים וקבוצות",
+      "access": {
+        "management": "full",
+        "coordinator": "full",
+        "secretary": "full",
+        "homeroom": "read"
+      }
+    },
+    "S05": {
+      "name": "ייבוא תלמידים מקובץ",
+      "module": "תלמידים וקבוצות",
+      "access": {
+        "management": "full",
+        "secretary": "full"
+      }
+    },
+    "S06": {
+      "name": "הערות התנהגות",
+      "module": "תלמידים וקבוצות",
+      "access": {
+        "management": "full",
+        "homeroom": "scoped",
+        "teacher": "scoped"
+      }
+    },
+    "S07": {
+      "name": "העברת תלמיד בין כיתות",
+      "module": "תלמידים וקבוצות",
+      "access": {
+        "management": "full",
+        "secretary": "full"
+      }
+    },
+    "S08": {
+      "name": "כרטיס כיתה מרוכז",
+      "module": "תלמידים וקבוצות",
+      "access": {
+        "management": "full",
+        "homeroom": "scoped"
+      }
+    },
+    "S09": {
+      "name": "תוצאות חיפוש גלובלי",
+      "module": "תלמידים וקבוצות",
+      "access": {
+        "management": "full",
+        "coordinator": "full",
+        "secretary": "full",
+        "homeroom": "scoped",
+        "teacher": "scoped"
+      }
+    },
+    "S10": {
+      "name": "פעולות קבוצתיות",
+      "module": "תלמידים וקבוצות",
+      "access": {
+        "management": "full",
+        "secretary": "full"
+      }
+    },
+    "T01": {
+      "name": "מערכת שעות שבועית (תצוגות)",
+      "module": "מערכת שעות",
+      "access": {
+        "management": "full",
+        "coordinator": "full",
+        "secretary": "read",
+        "homeroom": "scoped",
+        "teacher": "scoped",
+        "parent": "read",
+        "student": "read"
+      }
+    },
+    "T02": {
+      "name": "עריכת מערכת שעות",
+      "module": "מערכת שעות",
+      "access": {
+        "management": "full",
+        "coordinator": "full"
+      }
+    },
+    "T03": {
+      "name": "ממלא מקום ומורים זמינים",
+      "module": "מערכת שעות",
+      "access": {
+        "management": "full",
+        "secretary": "full"
+      }
+    },
+    "T04": {
+      "name": "ייבוא וייצוא מערכת שעות",
+      "module": "מערכת שעות",
+      "access": {
+        "management": "full"
+      }
+    },
+    "T06": {
+      "name": "היום שלי (מורה)",
+      "module": "מערכת שעות",
+      "access": {
+        "homeroom": "full",
+        "teacher": "full"
+      }
+    },
+    "X01": {
+      "name": "מסגרת האפליקציה (Shell)",
+      "module": "דשבורד ומשותף",
+      "access": {
+        "management": "full",
+        "coordinator": "full",
+        "secretary": "full",
+        "homeroom": "full",
+        "teacher": "full",
+        "parent": "full",
+        "student": "full"
+      }
+    },
+    "X02": {
+      "name": "מצבי מערכת משותפים (טעינה, ריק, שגיאה, 403, 404)",
+      "module": "דשבורד ומשותף",
+      "access": {
+        "management": "full",
+        "coordinator": "full",
+        "secretary": "full",
+        "homeroom": "full",
+        "teacher": "full",
+        "parent": "full",
+        "student": "full"
+      }
+    },
+    "X03": {
+      "name": "דשבורד מנהל",
+      "module": "דשבורד ומשותף",
+      "access": {
+        "management": "full"
+      }
+    },
+    "I10": {
+      "name": "הודעות הנהלה לצוות (דוגמת הדרכה)",
+      "module": "דשבורד ומשותף",
+      "access": {
+        "management": "full",
+        "coordinator": "read",
+        "secretary": "read",
+        "homeroom": "read",
+        "teacher": "read"
+      }
+    }
+  }
+}

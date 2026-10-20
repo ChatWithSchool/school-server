@@ -1,0 +1,11 @@
+# Local development database: `docker compose up -d` then `npm run seed`
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+volumes:
+  mongo-data:

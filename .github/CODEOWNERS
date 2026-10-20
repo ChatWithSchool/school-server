@@ -1,0 +1,9 @@
+# Replace @your-org/leads with the GitHub team of the team leads.
+# Changes to the shared parts need a review from the leads.
+/src/models/            @your-org/leads
+/src/permissions/       @your-org/leads
+/src/middleware/        @your-org/leads
+/src/seed/              @your-org/leads
+/src/routes/            @your-org/leads
+/openapi/               @your-org/leads
+/.github/               @your-org/leads
