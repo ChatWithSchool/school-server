@@ -424,6 +424,54 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /attendance/exceptions:
+    get:
+      tags:
+      - נוכחות
+      summary: N05 · אישורי איחור ויציאה מוקדמת
+      description: 'משמש את המסכים: N05 אישורי איחור ויציאה מוקדמת'
+      operationId: getattendanceExceptions
+      x-screens:
+      - N05
+      x-devs:
+      - C-06
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: date
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttendanceExceptionPage'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
     post:
       tags:
       - נוכחות
@@ -536,6 +584,33 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /attendance/rules:
+    get:
+      tags:
+      - נוכחות
+      summary: N04 · התראות היעדרות ויומן הודעות להורים
+      description: 'משמש את המסכים: N04 התראות היעדרות ויומן הודעות להורים'
+      operationId: getattendanceRules
+      x-screens:
+      - N04
+      x-devs:
+      - C-05
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttendanceRule'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
     put:
       tags:
       - נוכחות
@@ -618,12 +693,8 @@ paths:
             schema:
               type: object
       responses:
-        '200':
+        '204':
           description: בוצע
-          content:
-            application/json:
-              schema:
-                type: object
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -737,12 +808,8 @@ paths:
             schema:
               type: object
       responses:
-        '200':
+        '204':
           description: בוצע
-          content:
-            application/json:
-              schema:
-                type: object
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1158,11 +1225,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/GradeChangeList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1186,11 +1253,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/GradingWeightList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1243,11 +1310,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/GroupPage'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1386,11 +1453,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/Institution'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1855,11 +1922,11 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/LessonSubstitution'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1917,11 +1984,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/ActivityLogPage'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1973,11 +2040,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/SessionList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2087,11 +2154,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/NotificationLogPage'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2126,11 +2193,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/Transcript'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2160,11 +2227,11 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/TranscriptList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2593,11 +2660,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/VisibilitySettingList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -3065,11 +3132,11 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/ImportJob'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -3099,11 +3166,11 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/ImportJob'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -3363,11 +3430,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/StudentNoteList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -3629,6 +3696,39 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /terms:
+    get:
+      tags:
+      - הגדרות
+      summary: I03 · פרטי המוסד והגדרות
+      description: 'משמש את המסכים: I03 פרטי המוסד והגדרות'
+      operationId: getterms
+      x-screens:
+      - I03
+      x-devs:
+      - B-03
+      parameters:
+      - name: yearId
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TermList'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
     post:
       tags:
       - הגדרות
@@ -4569,6 +4669,674 @@ components:
           type: array
           items:
             type: string
+      required:
+      - items
+    Group:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - study
+          - special
+        gradeLevel:
+          type: string
+          nullable: true
+        subjectId:
+          type: string
+          nullable: true
+        teacherId:
+          type: string
+          nullable: true
+        studentIds:
+          type: array
+          items:
+            type: string
+        memberCount:
+          type: integer
+      required:
+      - id
+      - name
+      - type
+      - gradeLevel
+      - subjectId
+      - teacherId
+      - studentIds
+      - memberCount
+    ImportJob:
+      type: object
+      properties:
+        id:
+          type: string
+        fileName:
+          type: string
+        status:
+          type: string
+          enum:
+          - validated
+          - committed
+          - cancelled
+        totalRows:
+          type: integer
+        toCreate:
+          type: integer
+        toUpdate:
+          type: integer
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              row:
+                type: integer
+              field:
+                type: string
+              message:
+                type: string
+            required:
+            - row
+            - field
+            - message
+        committedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - fileName
+      - status
+      - totalRows
+      - toCreate
+      - toUpdate
+      - errors
+      - committedAt
+      - createdAt
+    ClassTransfer:
+      type: object
+      properties:
+        id:
+          type: string
+        studentId:
+          type: string
+        fromClassId:
+          type: string
+        toClassId:
+          type: string
+        effectiveDate:
+          type: string
+          format: date
+        reason:
+          type: string
+          nullable: true
+        transferredBy:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - studentId
+      - fromClassId
+      - toClassId
+      - effectiveDate
+      - reason
+      - transferredBy
+      - createdAt
+    StudentNote:
+      type: object
+      properties:
+        id:
+          type: string
+        studentId:
+          type: string
+        authorId:
+          type: string
+        type:
+          type: string
+          enum:
+          - positive
+          - discipline
+          - other
+        severity:
+          type: string
+          enum:
+          - low
+          - medium
+          - high
+          nullable: true
+        text:
+          type: string
+        visibleToParent:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - studentId
+      - authorId
+      - type
+      - severity
+      - text
+      - visibleToParent
+      - createdAt
+    GradeChange:
+      type: object
+      properties:
+        id:
+          type: string
+        gradeId:
+          type: string
+        studentId:
+          type: string
+        assessmentId:
+          type: string
+        changedBy:
+          type: string
+        oldScore:
+          type: number
+          nullable: true
+        newScore:
+          type: number
+          nullable: true
+        reason:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - gradeId
+      - studentId
+      - assessmentId
+      - changedBy
+      - oldScore
+      - newScore
+      - reason
+      - createdAt
+    GradingWeight:
+      type: object
+      properties:
+        id:
+          type: string
+        termId:
+          type: string
+          nullable: true
+        gradeLevel:
+          type: string
+        subjectId:
+          type: string
+        weights:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum:
+                - exam
+                - quiz
+                - assignment
+              percent:
+                type: number
+            required:
+            - type
+            - percent
+      required:
+      - id
+      - termId
+      - gradeLevel
+      - subjectId
+      - weights
+    Transcript:
+      type: object
+      properties:
+        id:
+          type: string
+        studentId:
+          type: string
+        classId:
+          type: string
+        termId:
+          type: string
+        version:
+          type: integer
+        subjects:
+          type: array
+          items:
+            type: object
+            properties:
+              subjectId:
+                type: string
+              finalScore:
+                type: number
+                nullable: true
+            required:
+            - subjectId
+            - finalScore
+        homeroomNote:
+          type: string
+          nullable: true
+        generatedBy:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - studentId
+      - classId
+      - termId
+      - version
+      - subjects
+      - homeroomNote
+      - generatedBy
+      - createdAt
+    Session:
+      type: object
+      properties:
+        id:
+          type: string
+        userAgent:
+          type: string
+          nullable: true
+        ipApprox:
+          type: string
+          nullable: true
+        lastSeenAt:
+          type: string
+          format: date-time
+        current:
+          type: boolean
+      required:
+      - id
+      - userAgent
+      - ipApprox
+      - lastSeenAt
+      - current
+    ActivityLog:
+      type: object
+      properties:
+        id:
+          type: string
+        action:
+          type: string
+        details:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - action
+      - details
+      - createdAt
+    VisibilitySetting:
+      type: object
+      properties:
+        id:
+          type: string
+        infoType:
+          type: string
+          enum:
+          - attendance
+          - grades
+          - notes
+          - timetable
+        parent:
+          type: boolean
+        student:
+          type: boolean
+        teacher:
+          type: boolean
+      required:
+      - id
+      - infoType
+      - parent
+      - student
+      - teacher
+    GradeLevel:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        order:
+          type: integer
+        classCount:
+          type: integer
+      required:
+      - id
+      - name
+      - order
+      - classCount
+    Term:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        status:
+          type: string
+          enum:
+          - open
+          - closed
+      required:
+      - id
+      - name
+      - startDate
+      - endDate
+      - status
+    LessonSubstitution:
+      type: object
+      properties:
+        id:
+          type: string
+        lessonId:
+          type: string
+        date:
+          type: string
+          format: date
+        absentTeacherId:
+          type: string
+        substituteTeacherId:
+          type: string
+        assignedBy:
+          type: string
+      required:
+      - id
+      - lessonId
+      - date
+      - absentTeacherId
+      - substituteTeacherId
+      - assignedBy
+    AttendanceRule:
+      type: object
+      properties:
+        streakDays:
+          type: integer
+        monthlyAbsences:
+          type: integer
+        autoNotifyParents:
+          type: boolean
+        messageTemplate:
+          type: string
+          nullable: true
+      required:
+      - streakDays
+      - monthlyAbsences
+      - autoNotifyParents
+      - messageTemplate
+    NotificationLog:
+      type: object
+      properties:
+        id:
+          type: string
+        studentId:
+          type: string
+        alertId:
+          type: string
+          nullable: true
+        content:
+          type: string
+        status:
+          type: string
+          enum:
+          - logged
+          - sent
+          - failed
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - studentId
+      - alertId
+      - content
+      - status
+      - createdAt
+    AttendanceException:
+      type: object
+      properties:
+        id:
+          type: string
+        studentId:
+          type: string
+        classId:
+          type: string
+        date:
+          type: string
+          format: date
+        type:
+          type: string
+          enum:
+          - late
+          - early_leave
+        time:
+          type: string
+        reason:
+          type: string
+          nullable: true
+        requestedBy:
+          type: string
+        status:
+          type: string
+          enum:
+          - pending
+          - approved
+          - rejected
+        decidedBy:
+          type: string
+          nullable: true
+        decisionNote:
+          type: string
+          nullable: true
+        decidedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - studentId
+      - classId
+      - date
+      - type
+      - time
+      - reason
+      - requestedBy
+      - status
+      - decidedBy
+      - decisionNote
+      - decidedAt
+      - createdAt
+    Institution:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - elementary
+          - middle
+          - high
+          - mixed
+        address:
+          type: string
+        phone:
+          type: string
+        contactEmail:
+          type: string
+        activeYearId:
+          type: string
+      required:
+      - id
+      - name
+      - type
+    GroupPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+        total:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+      required:
+      - items
+      - total
+      - page
+      - size
+    ActivityLogPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityLog'
+        total:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+      required:
+      - items
+      - total
+      - page
+      - size
+    NotificationLogPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationLog'
+        total:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+      required:
+      - items
+      - total
+      - page
+      - size
+    AttendanceExceptionPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttendanceException'
+        total:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+      required:
+      - items
+      - total
+      - page
+      - size
+    StudentNoteList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentNote'
+      required:
+      - items
+    GradeChangeList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GradeChange'
+      required:
+      - items
+    GradingWeightList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GradingWeight'
+      required:
+      - items
+    TranscriptList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transcript'
+      required:
+      - items
+    SessionList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Session'
+      required:
+      - items
+    VisibilitySettingList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/VisibilitySetting'
+      required:
+      - items
+    GradeLevelList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GradeLevel'
+      required:
+      - items
+    TermList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Term'
       required:
       - items
   responses:
