@@ -4,17 +4,46 @@
 
 ## התחלה מהירה
 
+### 1. מסד נתונים (פעם אחת)
+
+השרת צריך MongoDB שרץ על המחשב שלך. הדרך המומלצת:
+
+1. מורידות את **MongoDB Community Server**, גרסה **7.0** (כמו ב-CI), ל-Windows: https://www.mongodb.com/try/download/community
+2. מתקינות עם ברירות המחדל, ומשאירות מסומן **Install MongoD as a Service**. כך המסד עולה לבד עם המחשב. את Compass לא חייבים להתקין.
+
+זהו. הכתובת `mongodb://localhost:27017` שב-`.env.example` כבר מצביעה עליו.
+
+**חלופות:**
+
+- **Docker:** מי שמותקן אצלה Docker יכולה להריץ `docker compose up -d` במקום ההתקנה.
+- **MongoDB Atlas:** מסד חינמי בענן, למי שלא יכולה להתקין. יוצרות cluster ומדביקות את הכתובת שלו ב-`MONGODB_URI` שב-`.env`.
+
+### 2. להריץ את השרת
+
 ```bash
 npm install
 cp .env.example .env            # אפשר להשאיר את ברירות המחדל לפיתוח מקומי
-docker compose up -d            # MongoDB מקומי (או חיבור ל-MongoDB אחר ב-.env)
-npm run seed                    # נתוני הדגמה: מוסד, צוות, כיתות ותלמידים
+npm run seed                    # נתוני הדגמה: מוסד, צוות, כיתות, תלמידים, מערכת שעות, ציונים ונוכחות
 npm run dev                     # השרת על http://localhost:4000
 ```
 
 משתמש הדגמה: `yuval.mizrahi@school.example` עם הסיסמה `Demo1234!` (הנהלה). משתמשים נוספים מופיעים בהדפסה של `npm run seed`.
 
 בדיקת תקינות: `curl http://localhost:4000/api/health`
+
+### 3. לראות את הנתונים ב-VS Code
+
+1. מתקינות את התוסף **MongoDB for VS Code** (`Ctrl+Shift+X`, ומחפשות MongoDB).
+2. בסרגל השמאלי לוחצות על העלה הירוק, ואז **Add Connection** > **Connect with Connection String**, ומדביקות `mongodb://localhost:27017`.
+3. בחלונית **CONNECTIONS** פותחות את `localhost:27017` > `school` > אוסף, למשל `lessons`.
+4. **Documents** מציג את הרשומות, **Schema** מראה אילו שדות יש בהן, ו-**Indexes** מציג את האינדקסים.
+
+הסכמה עצמה כתובה בקוד, ב-`src/models` ובמודל של המודול שלך. מה שרואים בתוסף הוא הנתונים שנשמרו לפיה.
+
+### תקלות נפוצות
+
+- **הרצתי seed ולא רואה נתונים:** כנראה רצים אצלך שני שרתי MongoDB על אותו פורט (גם התקנה של Windows וגם Docker). השרת מתחבר לאחד מהם, ואת מסתכלת על השני. בחרי אחד: עצרי את Docker (`docker compose down`), או עצרי את השירות `MongoDB` ב-Windows (Services > MongoDB > Stop).
+- **`ECONNREFUSED 127.0.0.1:27017`:** המסד לא רץ. ב-Windows: Services > MongoDB > Start. עם Docker: `docker compose up -d`.
 
 ## פקודות
 
