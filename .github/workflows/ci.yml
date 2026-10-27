@@ -1,4 +1,5 @@
 name: CI
+
 on:
   pull_request:
     branches: [dev, stage]
@@ -25,3 +26,68 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+
+  # After a merge to dev or stage (not on pull requests), and only if verify passed:
+  # build the image and start it on the EC2 instance. See docs/deploy-aws.md.
+  deploy:
+    needs: verify
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    # the environment is named like the branch (dev or stage); its secrets and rules live in GitHub
+    environment: ${{ github.ref_name }}
+    concurrency:
+      group: deploy-server-${{ github.ref_name }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+    env:
+      ENV_NAME: ${{ github.ref_name }}
+      IMAGE: cws-server:${{ github.ref_name }}-${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare SSH
+        env:
+          SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.EC2_KNOWN_HOSTS }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          # "ec2" is the short name used below; the server's identity must match known_hosts
+          printf 'Host ec2\n  HostName %s\n  User %s\n  IdentityFile ~/.ssh/deploy_key\n  IdentitiesOnly yes\n  StrictHostKeyChecking yes\n' "$EC2_HOST" "$EC2_USER" > ~/.ssh/config
+
+      - name: Build the image
+        run: docker build -t "$IMAGE" .
+
+      - name: Send the image to the instance
+        run: docker save "$IMAGE" | gzip | ssh ec2 'gunzip | docker load'
+
+      - name: Send the deploy files
+        run: scp deploy/compose.yml deploy/deploy-server.sh "ec2:/srv/cws/$ENV_NAME/"
+
+      - name: Write the server settings (from this environment's secrets)
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: |
+          if [ -z "$MONGODB_URI" ] || [ "${#JWT_SECRET}" -lt 32 ]; then
+            echo "Set the secrets MONGODB_URI and JWT_SECRET (at least 32 characters) in the '$ENV_NAME' environment" >&2
+            exit 1
+          fi
+          # the values travel through stdin, so they never appear in a command line or in the logs
+          # shellcheck disable=SC2029  # the values are expanded here on purpose
+          printf 'NODE_ENV=production\nPORT=4000\nMONGODB_URI=%s\nJWT_SECRET=%s\nJWT_EXPIRES_IN=8h\nCORS_ORIGIN=https://cws-%s.safeai613.com\n' \
+            "$MONGODB_URI" "$JWT_SECRET" "$ENV_NAME" \
+            | ssh ec2 "umask 077 && cat > /srv/cws/$ENV_NAME/server.env.new && mv -f /srv/cws/$ENV_NAME/server.env.new /srv/cws/$ENV_NAME/server.env"
+
+      - name: Start the new version (goes back to the previous one if it is not healthy)
+        run: |
+          # shellcheck disable=SC2029  # the values are expanded here on purpose
+          ssh ec2 "bash /srv/cws/$ENV_NAME/deploy-server.sh $ENV_NAME $IMAGE"
+
+      - name: Check the site from outside
+        run: curl -fsS --retry 5 --retry-delay 3 "https://cws-$ENV_NAME.safeai613.com/api/health"

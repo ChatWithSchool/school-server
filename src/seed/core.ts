@@ -12,7 +12,8 @@ import {
 import { ROLE_KEYS, type RoleKey } from '../permissions';
 import { parFirst, parMail, stfFirst, stfLast, stfMail, stuFirst, stuLast } from './names';
 
-export const DEMO_PASSWORD = 'Demo1234!';
+// the public demo password is for a local database only: a remote one needs SEED_PASSWORD (see guard.ts)
+export const DEMO_PASSWORD = process.env.SEED_PASSWORD ?? 'Demo1234!';
 export const INSTITUTION_NAME = 'בית ספר לדוגמה';
 
 const ROLE_NAMES: Record<RoleKey, string> = {
@@ -35,8 +36,8 @@ const SUBJECTS: [string, string, string[]][] = [
   ['גיאוגרפיה', 'GEO', ['ט']],
   ['אמנות', 'ART', ['ז', 'ח']],
 ];
-// [roles, subject code, classes, status]. Exported for the shared-collections seed.
-export const STAFF: [RoleKey[], string, string[], 'active' | 'disabled'][] = [
+// [roles, subject code, classes, status]
+const STAFF: [RoleKey[], string, string[], 'active' | 'disabled'][] = [
   [['management'], '', [], 'active'],
   [['secretary'], '', [], 'active'],
   [['homeroom', 'teacher'], 'MATH', ['ח1'], 'active'],
