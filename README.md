@@ -37,13 +37,34 @@ src/
   permissions/               מטריצת ההרשאות (matrix.json) והפונקציות שלה
   middleware/                אימות, הרשאה, ולידציה וטיפול בשגיאות
   routes/                    התחברות, וטעינה אוטומטית של המודולים
-  seed/                      seed הליבה
+  seed/                      seed הליבה (core.ts) ו-seed האוספים המשותפים (shared/)
   modules/<שם>/              כל מסך או משאב במודול משלו
       model.ts schema.ts routes.ts seed.ts *.test.ts
 openapi/openapi.yaml         חוזה ה-API
 ```
 
 **כל מפתחת עובדת בתיקיית מודול משלה.** ה-`routes.ts` של כל מודול מחובר לשרת אוטומטית, וה-`seed.ts` שלו רץ אוטומטית ב-`npm run seed`. אין קובץ משותף שכולן עורכות, ולכן אין התנגשויות מיזוג.
+
+## האוספים המשותפים
+
+אוסף שיותר ממסך אחד קורא ממנו נמצא ב-`src/models`, יחד עם אוספי הליבה. המודל וה-seed שלו כבר מוכנים, ולכן אף מסך לא מחכה למסך אחר. המסך שבעמודה "כותב" אחראי על ה-endpoints שכותבים לאוסף (סרבר ב'). שאר המסכים רק קוראים ממנו.
+
+| אוסף                 | מודל                 | כותב | קוראים                            |
+| -------------------- | -------------------- | ---- | --------------------------------- |
+| rooms                | `Room`               | I08  | T02                               |
+| events               | `SchoolEvent`        | I07  | T01                               |
+| teaching_assignments | `TeachingAssignment` | I06  | I05, G08                          |
+| lessons              | `Lesson`             | T02  | T01, T03, T04, T06, N01           |
+| invites              | `Invite`             | A07  | X03                               |
+| assessments          | `Assessment`         | G04  | G01, G02, G05                     |
+| grades               | `Grade`              | G01  | S03, S08, G02, G05, G07, X03      |
+| grade_feedback       | `GradeFeedback`      | G01  | G02                               |
+| attendance_records   | `AttendanceRecord`   | N01  | S03, S08, N03, N04, N05, N06, X03 |
+| attendance_alerts    | `AttendanceAlert`    | N04  | X03                               |
+
+- **תאריך בלי שעה** (יום נוכחות, תאריך אירוע) נשמר כמחרוזת `YYYY-MM-DD`. ראי `src/utils/dateOnly.ts`.
+- **תגיות של תלמיד** הן השדה `tags` של `Student`, ואין להן אוסף נפרד.
+- **סדר ה-seed:** הליבה, אחריה האוספים המשותפים (`seed/shared`), ורק אז ה-seed של המודולים. ה-seed שלך יכול לקרוא מכל אלה.
 
 ## מודול ההדרכה
 
