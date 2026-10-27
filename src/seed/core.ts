@@ -35,8 +35,8 @@ const SUBJECTS: [string, string, string[]][] = [
   ['גיאוגרפיה', 'GEO', ['ט']],
   ['אמנות', 'ART', ['ז', 'ח']],
 ];
-// [roles, subject code, classes, status]
-const STAFF: [RoleKey[], string, string[], 'active' | 'disabled'][] = [
+// [roles, subject code, classes, status]. Exported for the shared-collections seed.
+export const STAFF: [RoleKey[], string, string[], 'active' | 'disabled'][] = [
   [['management'], '', [], 'active'],
   [['secretary'], '', [], 'active'],
   [['homeroom', 'teacher'], 'MATH', ['ח1'], 'active'],
