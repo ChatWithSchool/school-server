@@ -16,6 +16,25 @@ export default tseslint.config(
     },
   },
   {
+    // Module boundaries: a module imports only from the core (src/models, utils, middleware...) and
+    // from its own folder. A collection that another module needs belongs in src/models.
+    files: ['src/modules/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              regex: '^\\.\\./(?!\\.\\./)',
+              message:
+                'Do not import from another module. Shared collections live in src/models: import them from there.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['**/*.js', '**/*.mjs', 'jest.config.js'],
     rules: { '@typescript-eslint/no-require-imports': 'off' },
   },
