@@ -4356,19 +4356,6 @@ components:
       - text
       - authorId
       - createdAt
-    StudentTag:
-      type: object
-      properties:
-        id:
-          type: string
-        studentId:
-          type: string
-        label:
-          type: string
-      required:
-      - id
-      - studentId
-      - label
     AttendanceRecord:
       type: object
       properties:
@@ -4558,11 +4545,12 @@ components:
       - items
     StudentTagList:
       type: object
+      description: התגיות של התלמיד (השדה tags של Student)
       properties:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/StudentTag'
+            type: string
       required:
       - items
   responses:
