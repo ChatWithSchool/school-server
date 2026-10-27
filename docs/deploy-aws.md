@@ -132,10 +132,11 @@ sudo nginx -t                                # בדיקת הגדרות nginx
 
 ## תקלות נפוצות
 
-| מה רואים                           | סיבה ופתרון                                                                                       |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------- |
-| שלב `Prepare SSH` או `Send` נכשל   | בדקי את ארבעת ה-Secrets של הסביבה. `EC2_KNOWN_HOSTS` חייב להיווצר מאותה כתובת שב-`EC2_HOST`       |
-| `container is 'unhealthy'`         | כנראה `MONGODB_URI` שגוי, או שה-IP לא ב-Network Access של Atlas. ראי `docker logs cws-dev-server` |
-| `Check the site from outside` נכשל | DNS או תעודה עדיין לא מוכנים (שלבים 3 ו-5), או שמצב SSL ב-Cloudflare אינו Full (strict)           |
-| `ERR_TOO_MANY_REDIRECTS`           | Proxy דלוק ומצב SSL ב-Cloudflare הוא Flexible: להחליף ל-Full (strict)                             |
-| `setup-ec2.sh` מדווח שפורט תפוס    | משהו אחר משתמש ב-4101 או ב-4102: לשנות את הפורט ב-`deploy-server.sh` וב-`nginx/cws.conf`          |
+| מה רואים                            | סיבה ופתרון                                                                                                                                                        |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| שלב `Prepare SSH` או `Send` נכשל    | בדקי את ארבעת ה-Secrets של הסביבה. `EC2_KNOWN_HOSTS` חייב להיווצר מאותה כתובת שב-`EC2_HOST`                                                                        |
+| `container is 'unhealthy'`          | כנראה `MONGODB_URI` שגוי, או שה-IP לא ב-Network Access של Atlas. ראי `docker logs cws-dev-server`                                                                  |
+| `Check the site from outside` נכשל  | DNS או תעודה עדיין לא מוכנים (שלבים 3 ו-5), או שמצב SSL ב-Cloudflare אינו Full (strict)                                                                            |
+| `ERR_TOO_MANY_REDIRECTS`            | Proxy דלוק ומצב SSL ב-Cloudflare הוא Flexible: להחליף ל-Full (strict)                                                                                              |
+| `unknown shorthand flag: 'p' in -p` | חסר התוסף Docker Compose במופע. ב-Ubuntu: `sudo apt-get install -y docker-compose-v2` (אם Docker הותקן מהמאגר של Docker: `docker-compose-plugin`), ואז Re-run jobs |
+| `setup-ec2.sh` מדווח שפורט תפוס     | משהו אחר משתמש ב-4101 או ב-4102: לשנות את הפורט ב-`deploy-server.sh` וב-`nginx/cws.conf`                                                                           |

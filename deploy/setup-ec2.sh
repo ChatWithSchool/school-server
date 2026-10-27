@@ -15,6 +15,7 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="${CWS_ROOT:-/srv/cws}"
 
 command -v docker > /dev/null || { echo "docker is not installed" >&2; exit 1; }
+docker compose version > /dev/null 2>&1 || { echo "the docker compose plugin is not installed (Ubuntu: sudo apt-get install -y docker-compose-v2, see docs/deploy-aws.md)" >&2; exit 1; }
 command -v nginx > /dev/null || { echo "nginx is not installed" >&2; exit 1; }
 
 # 1. the deploy user. Note: a member of the docker group can control the whole machine,

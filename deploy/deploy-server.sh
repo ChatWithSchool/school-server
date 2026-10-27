@@ -27,6 +27,8 @@ if [ ! -f server.env ]; then
   exit 2
 fi
 docker image inspect "$IMAGE" > /dev/null
+# without the plugin "docker compose -p" fails with "unknown shorthand flag: 'p'"
+docker compose version > /dev/null 2>&1 || { echo "the docker compose plugin is not installed (Ubuntu: sudo apt-get install -y docker-compose-v2, see docs/deploy-aws.md)" >&2; exit 2; }
 
 PREVIOUS=""
 if [ -f .current-image ]; then PREVIOUS="$(cat .current-image)"; fi
