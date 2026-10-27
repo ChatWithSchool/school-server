@@ -4214,6 +4214,8 @@ components:
       - teacherId
       - dayOfWeek
       - period
+      - groupId
+      - roomId
     Invite:
       type: object
       description: הטוקן של ההזמנה לא נחשף אף פעם. הוא נשלח רק בקישור.
@@ -4264,6 +4266,7 @@ components:
       - status
       - createdAt
       - expiresAt
+      - invitedBy
     Assessment:
       type: object
       properties:
@@ -4307,6 +4310,9 @@ components:
       - classId
       - subjectId
       - teacherId
+      - groupId
+      - termId
+      - date
     Grade:
       type: object
       properties:
@@ -4389,6 +4395,8 @@ components:
       - studentId
       - date
       - status
+      - period
+      - markedBy
     AttendanceAlert:
       type: object
       properties:
@@ -4406,6 +4414,10 @@ components:
         since:
           type: string
           format: date
+        month:
+          type: string
+          nullable: true
+          description: 'YYYY-MM של התראה חודשית; null בהתראת רצף'
         count:
           type: integer
         status:
@@ -4415,6 +4427,9 @@ components:
           - closed
         closeNote:
           type: string
+        closedBy:
+          type: string
+          nullable: true
         closedAt:
           type: string
           format: date-time
@@ -4426,6 +4441,9 @@ components:
       - type
       - since
       - status
+      - month
+      - closedBy
+      - closedAt
     RoomPage:
       type: object
       properties:
