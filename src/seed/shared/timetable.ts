@@ -9,6 +9,7 @@ const PERIODS = 6;
 /** The vacation day: one of the last 20 school days, so attendance shows a day off. */
 export const vacationDay = (ctx: SeedContext) => ctx.schoolDays(20)[11];
 
+/** Returns the ids of the active rooms, by name. */
 export async function seedRooms(ctx: SeedContext): Promise<Record<string, Types.ObjectId>> {
   const rooms: {
     name: string;
@@ -33,7 +34,8 @@ export async function seedRooms(ctx: SeedContext): Promise<Record<string, Types.
       { $set: r },
       { upsert: true, new: true },
     );
-    ids[r.name] = doc._id;
+    // only active rooms can get lessons
+    if (r.active) ids[r.name] = doc._id;
   }
   return ids;
 }
@@ -132,13 +134,16 @@ export async function seedTeachingAssignments(
 
 /**
  * A weekly timetable without clashes: for every slot each class takes the next assignment whose
- * teacher is still free in that slot. Each class sits in its own room, science in the lab.
+ * teacher and room are both still free in that slot. Each class sits in its own room, science in
+ * the lab. Only active rooms are used.
  */
 export async function seedLessons(
   ctx: SeedContext,
   byClass: Record<string, Assignment[]>,
   roomIds: Record<string, Types.ObjectId>,
 ): Promise<void> {
+  const roomFor = (a: Assignment, className: string) =>
+    roomIds[a.code === 'SCI' ? 'מעבדת מדעים' : `חדר ${className}`] ?? null;
   const classes = Object.keys(byClass).sort();
   for (let day = 0; day < DAYS; day++) {
     for (let period = 1; period <= PERIODS; period++) {
@@ -150,7 +155,9 @@ export async function seedLessons(
         let chosen: Assignment | null = null;
         for (let k = 0; k < options.length && !chosen; k++) {
           const a = options[(start + k) % options.length];
-          if (!busy.has(String(a.teacherId))) chosen = a;
+          const room = roomFor(a, name);
+          const free = !busy.has(`t:${a.teacherId}`) && !(room && busy.has(`r:${room}`));
+          if (free) chosen = a;
         }
         const key = {
           institutionId: ctx.instId,
@@ -164,8 +171,9 @@ export async function seedLessons(
           await Lesson.deleteOne(key);
           continue;
         }
-        busy.add(String(chosen.teacherId));
-        const roomId = chosen.code === 'SCI' ? roomIds['מעבדת מדעים'] : roomIds[`חדר ${name}`];
+        const roomId = roomFor(chosen, name);
+        busy.add(`t:${chosen.teacherId}`);
+        if (roomId) busy.add(`r:${roomId}`);
         await Lesson.updateOne(
           key,
           { $set: { subjectId: chosen.subjectId, teacherId: chosen.teacherId, roomId } },

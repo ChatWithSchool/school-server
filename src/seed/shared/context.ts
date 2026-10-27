@@ -2,7 +2,7 @@ import type { Types } from 'mongoose';
 import { Institution, SchoolClass, Student, Subject, User } from '../../models';
 import { INSTITUTION_NAME, STAFF } from '../core';
 import { stfMail } from '../names';
-import { toDateOnly } from '../../utils/dateOnly';
+import { addDays, toDateOnly, weekday } from '../../utils/dateOnly';
 
 type Id = Types.ObjectId;
 
@@ -21,7 +21,7 @@ export type SeedContext = {
   studentsByClass: Record<string, Id[]>;
   /** The school days (Sunday to Thursday) before `now`, oldest first. */
   schoolDays: (count: number) => string[];
-  /** `now` moved by whole days, as 'YYYY-MM-DD'. */
+  /** Today (in the school's time zone) moved by whole days, as 'YYYY-MM-DD'. */
   dayOffset: (days: number) => string;
   now: Date;
 };
@@ -56,15 +56,13 @@ export async function loadContext(now: Date): Promise<SeedContext | null> {
     studentsByClass[name] = students.map((s) => s._id);
   }
 
-  const dayOffset = (days: number) => {
-    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + days);
-    return toDateOnly(d);
-  };
+  const today = toDateOnly(now);
+  const dayOffset = (days: number) => addDays(today, days);
   const schoolDays = (count: number) => {
     const days: string[] = [];
     for (let back = 1; days.length < count; back++) {
-      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - back);
-      if (d.getDay() <= 4) days.unshift(toDateOnly(d));
+      const day = addDays(today, -back);
+      if (weekday(day) <= 4) days.unshift(day);
     }
     return days;
   };

@@ -9,17 +9,19 @@ const attendanceAlertSchema = new Schema(
     /** streak = absent several days in a row; monthly = too many absences this month */
     type: { type: String, enum: ['streak', 'monthly'], required: true },
     since: { type: String, required: true, match: DATE_ONLY },
+    /** 'YYYY-MM' of a monthly alert, null for a streak: a new month is a new case. */
+    month: { type: String, match: /^\d{4}-\d{2}$/, default: null },
     count: { type: Number, min: 0 },
     status: { type: String, enum: ['open', 'closed'], default: 'open' },
-    closedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    closedBy: { type: Schema.Types.ObjectId, ref: 'User', default: null },
     closeNote: { type: String, trim: true },
-    closedAt: { type: Date },
+    closedAt: { type: Date, default: null },
   },
   { timestamps: true, collection: 'attendance_alerts' },
 );
 // the same case never opens two alerts
 attendanceAlertSchema.index(
-  { studentId: 1, type: 1 },
+  { studentId: 1, type: 1, month: 1 },
   { unique: true, partialFilterExpression: { status: 'open' } },
 );
 

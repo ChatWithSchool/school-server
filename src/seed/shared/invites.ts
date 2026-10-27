@@ -37,14 +37,15 @@ export async function seedInvites(ctx: SeedContext): Promise<void> {
     { email: 'invite5@school.example', role: 'coordinator', status: 'revoked', expiresInDays: 4 },
   ];
   for (const inv of invites) {
-    // a fixed demo token per email, stored only as a hash like a real invite
-    const tokenHash = crypto.createHash('sha256').update(`seed-invite:${inv.email}`).digest('hex');
+    // A real invite token is always random: nobody can guess it from the code. Only its hash is
+    // stored, and only when the invite is created, so running the seed again keeps the token.
+    const token = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
     await Invite.updateOne(
-      { tokenHash },
+      { institutionId: ctx.instId, email: inv.email },
       {
+        $setOnInsert: { tokenHash },
         $set: {
-          institutionId: ctx.instId,
-          email: inv.email,
           role: inv.role,
           status: inv.status,
           classIds: inv.classIds ?? [],

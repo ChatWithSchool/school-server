@@ -49,28 +49,41 @@ export async function seedGrades(ctx: SeedContext): Promise<void> {
         { upsert: true, new: true },
       );
       const students = ctx.studentsByClass[className] ?? [];
-      for (let s = 0; s < students.length; s++) {
-        const score = scoreFor(s, a);
-        const grade = await Grade.findOneAndUpdate(
-          { assessmentId: assessment._id, studentId: students[s] },
-          { $set: { institutionId: ctx.instId, score, updatedBy: ta.teacherId } },
-          { upsert: true, new: true },
-        );
-        if (score !== null && (s + a) % 13 === 1) {
-          await GradeFeedback.updateOne(
-            { gradeId: grade._id },
-            {
-              $set: {
-                institutionId: ctx.instId,
-                studentId: students[s],
-                authorId: ta.teacherId,
-                text: FEEDBACK[(s + a) % FEEDBACK.length],
-              },
+      // one round trip per assessment instead of one per student
+      await Grade.bulkWrite(
+        students.map((studentId, s) => ({
+          updateOne: {
+            filter: { assessmentId: assessment._id, studentId },
+            update: {
+              $set: { institutionId: ctx.instId, score: scoreFor(s, a), updatedBy: ta.teacherId },
             },
-            { upsert: true },
-          );
-        }
-      }
+            upsert: true,
+          },
+        })),
+      );
+      const grades = await Grade.find({ assessmentId: assessment._id });
+      const gradeOf = new Map(grades.map((g) => [String(g.studentId), g._id]));
+      const feedback = students.flatMap((studentId, s) =>
+        scoreFor(s, a) !== null && (s + a) % 13 === 1
+          ? [
+              {
+                updateOne: {
+                  filter: { gradeId: gradeOf.get(String(studentId)) },
+                  update: {
+                    $set: {
+                      institutionId: ctx.instId,
+                      studentId,
+                      authorId: ta.teacherId,
+                      text: FEEDBACK[(s + a) % FEEDBACK.length],
+                    },
+                  },
+                  upsert: true,
+                },
+              },
+            ]
+          : [],
+      );
+      if (feedback.length) await GradeFeedback.bulkWrite(feedback);
       a++;
     }
   }

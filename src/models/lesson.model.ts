@@ -10,10 +10,10 @@ const lessonSchema = new Schema(
     institutionId: { type: Schema.Types.ObjectId, ref: 'Institution', required: true, index: true },
     yearId: { type: Schema.Types.ObjectId, ref: 'AcademicYear', required: true },
     classId: { type: Schema.Types.ObjectId, ref: 'SchoolClass', required: true },
-    groupId: { type: Schema.Types.ObjectId, ref: 'Group' },
+    groupId: { type: Schema.Types.ObjectId, ref: 'Group', default: null },
     subjectId: { type: Schema.Types.ObjectId, ref: 'Subject', required: true },
     teacherId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    roomId: { type: Schema.Types.ObjectId, ref: 'Room' },
+    roomId: { type: Schema.Types.ObjectId, ref: 'Room', default: null },
     /** 0 = Sunday ... 5 = Friday */
     dayOfWeek: { type: Number, required: true, min: 0, max: 5 },
     period: { type: Number, required: true, min: 1, max: 10 },
