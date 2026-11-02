@@ -21,9 +21,12 @@ export function createApp(): Express {
   // every module route below needs a signed-in user; each route adds authorize('<screen>') itself
   const protectedRouter = Router();
   protectedRouter.use(requireAuth);
+  
+  // השרת כבר טוען אוטומטית את כל התיקיות תחת src/modules/ דרך mountModules!
   mountModules(app, [protectedRouter]);
 
   app.use(notFound);
   app.use(errorHandler);
+  
   return app;
 }
