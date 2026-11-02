@@ -3,7 +3,6 @@ import { Assessment } from '../../models/assessment.model';
 
 const router = Router();
 
-
 router.get('/:id/stats', async (req, res) => {
   try {
     const assessmentId = req.params.id;
@@ -12,10 +11,9 @@ router.get('/:id/stats', async (req, res) => {
     if (!assessment) {
       return res.status(404).json({ error: 'Assessment not found' });
     }
-
     
     res.json(assessment);
-  } catch (_error) {
+  } catch {
     res.status(500).json({ error: 'Failed to fetch assessment statistics' });
   }
 });

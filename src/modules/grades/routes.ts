@@ -8,7 +8,7 @@ router.get('/:id/grades', async (req, res) => {
     const studentId = req.params.id;
     const grades = await Grade.find({ studentId });
     res.json(grades);
-  } catch (_error) {
+  } catch {
     res.status(500).json({ error: 'Failed to fetch student grades' });
   }
 });
