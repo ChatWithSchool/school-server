@@ -3,11 +3,12 @@ import { Grade } from '../../models/grade.model';
 
 const router = Router();
 
-router.get('/:id/grades', async (req, res) => {  try {
+router.get('/:id/grades', async (req, res) => {
+  try {
     const studentId = req.params.id;
     const grades = await Grade.find({ studentId });
     res.json(grades);
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ error: 'Failed to fetch student grades' });
   }
 });
