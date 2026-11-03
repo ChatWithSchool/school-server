@@ -1,0 +1,33 @@
+# One compose project per environment (cws-dev, cws-stage). deploy-server.sh sets the variables.
+services:
+  server:
+    image: ${IMAGE:?IMAGE is required}
+    container_name: cws-${CWS_ENV:?CWS_ENV is required}-server
+    restart: unless-stopped
+    env_file: server.env
+    # only the local nginx can reach the container, so it is not exposed to the internet
+    ports:
+      - '127.0.0.1:${HOST_PORT:?HOST_PORT is required}:4000'
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:4000/api/health').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'

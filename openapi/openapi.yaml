@@ -32,11 +32,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/ActionItemList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -308,11 +308,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/AssessmentStats'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -424,6 +424,54 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /attendance/exceptions:
+    get:
+      tags:
+      - נוכחות
+      summary: N05 · אישורי איחור ויציאה מוקדמת
+      description: 'משמש את המסכים: N05 אישורי איחור ויציאה מוקדמת'
+      operationId: getattendanceExceptions
+      x-screens:
+      - N05
+      x-devs:
+      - C-06
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: date
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttendanceExceptionPage'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
     post:
       tags:
       - נוכחות
@@ -522,11 +570,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/InstitutionAttendance'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -536,6 +584,33 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /attendance/rules:
+    get:
+      tags:
+      - נוכחות
+      summary: N04 · התראות היעדרות ויומן הודעות להורים
+      description: 'משמש את המסכים: N04 התראות היעדרות ויומן הודעות להורים'
+      operationId: getattendanceRules
+      x-screens:
+      - N04
+      x-devs:
+      - C-05
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttendanceRule'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
     put:
       tags:
       - נוכחות
@@ -572,6 +647,7 @@ paths:
       summary: X03 · דשבורד מנהל
       description: 'משמש את המסכים: X03 דשבורד מנהל'
       operationId: getattendanceTrend
+      x-deferred: true
       x-screens:
       - X03
       x-devs:
@@ -586,11 +662,7 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
-          content:
-            application/json:
-              schema:
-                type: object
+          description: נדחה מגרסה 1 (v1-lite). לא בונים את ה-endpoint הזה
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -618,12 +690,8 @@ paths:
             schema:
               type: object
       responses:
-        '200':
+        '204':
           description: בוצע
-          content:
-            application/json:
-              schema:
-                type: object
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -737,12 +805,8 @@ paths:
             schema:
               type: object
       responses:
-        '200':
+        '204':
           description: בוצע
-          content:
-            application/json:
-              schema:
-                type: object
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -836,11 +900,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/MonthlyAttendanceReport'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -875,11 +939,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: קובץ CSV של הדוח
           content:
-            application/json:
+            text/csv:
               schema:
-                type: object
+                type: string
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -909,11 +973,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/ClassOverview'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1006,11 +1070,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/DashboardSummary'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1158,11 +1222,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/GradeChangeList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1186,11 +1250,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/GradingWeightList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1243,11 +1307,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/GroupPage'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1386,11 +1450,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/Institution'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1597,11 +1661,11 @@ paths:
       security: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/InvitePreview'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1636,11 +1700,11 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/LoginResponse'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1750,11 +1814,11 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/LessonValidation'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1855,11 +1919,11 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/LessonSubstitution'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1875,6 +1939,7 @@ paths:
       summary: A06 · אבטחת החשבון שלי
       description: 'משמש את המסכים: A06 אבטחת החשבון שלי'
       operationId: postme2faEnable
+      x-deferred: true
       x-screens:
       - A06
       x-devs:
@@ -1889,11 +1954,7 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
-          content:
-            application/json:
-              schema:
-                type: object
+          description: נדחה מגרסה 1 (v1-lite). לא בונים את ה-endpoint הזה
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1917,11 +1978,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/ActivityLogPage'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1945,11 +2006,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/MyPermissions'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -1973,11 +2034,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/SessionList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2031,11 +2092,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/TeachingCardList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2059,11 +2120,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/MyDay'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2087,11 +2148,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/NotificationLogPage'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2126,11 +2187,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/Transcript'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2160,11 +2221,11 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/TranscriptList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2188,11 +2249,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/RoleSummaryList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2368,11 +2429,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/WeekSchedule'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2388,6 +2449,7 @@ paths:
       summary: T01 · מערכת שעות שבועית (תצוגות)
       description: 'משמש את המסכים: T01 מערכת שעות שבועית (תצוגות)'
       operationId: getscheduleExport.pdf
+      x-deferred: true
       x-screens:
       - T01
       x-devs:
@@ -2396,11 +2458,7 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
-          content:
-            application/json:
-              schema:
-                type: object
+          description: נדחה מגרסה 1 (v1-lite). לא בונים את ה-endpoint הזה
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2416,6 +2474,7 @@ paths:
       summary: T04 · ייבוא וייצוא מערכת שעות
       description: 'משמש את המסכים: T04 ייבוא וייצוא מערכת שעות'
       operationId: postscheduleImportCommit
+      x-deferred: true
       x-screens:
       - T04
       x-devs:
@@ -2430,11 +2489,7 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
-          content:
-            application/json:
-              schema:
-                type: object
+          description: נדחה מגרסה 1 (v1-lite). לא בונים את ה-endpoint הזה
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2450,6 +2505,7 @@ paths:
       summary: T04 · ייבוא וייצוא מערכת שעות
       description: 'משמש את המסכים: T04 ייבוא וייצוא מערכת שעות'
       operationId: postscheduleImportValidate
+      x-deferred: true
       x-screens:
       - T04
       x-devs:
@@ -2464,11 +2520,7 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
-          content:
-            application/json:
-              schema:
-                type: object
+          description: נדחה מגרסה 1 (v1-lite). לא בונים את ה-endpoint הזה
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2484,6 +2536,7 @@ paths:
       summary: T02 · עריכת מערכת שעות
       description: 'משמש את המסכים: T02 עריכת מערכת שעות'
       operationId: postschedulePublish
+      x-deferred: true
       x-screens:
       - T02
       x-devs:
@@ -2498,11 +2551,7 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
-          content:
-            application/json:
-              schema:
-                type: object
+          description: נדחה מגרסה 1 (v1-lite). לא בונים את ה-endpoint הזה
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2518,6 +2567,7 @@ paths:
       summary: T04 · ייבוא וייצוא מערכת שעות
       description: 'משמש את המסכים: T04 ייבוא וייצוא מערכת שעות'
       operationId: getscheduleTemplate
+      x-deferred: true
       x-screens:
       - T04
       x-devs:
@@ -2526,11 +2576,7 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
-          content:
-            application/json:
-              schema:
-                type: object
+          description: נדחה מגרסה 1 (v1-lite). לא בונים את ה-endpoint הזה
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2565,11 +2611,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/SearchResults'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2593,11 +2639,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/VisibilitySettingList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2712,11 +2758,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/AvailableTeacherList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2746,11 +2792,11 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/ImportResult'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2780,11 +2826,11 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/StaffImportCheck'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2814,11 +2860,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/StaffProfileDetail'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -2875,15 +2921,36 @@ paths:
       - G05
       x-devs:
       - A-07
+      parameters:
+      - name: assessmentId
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: subjectId
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: classIds
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: termId
+        in: query
+        required: false
+        schema:
+          type: string
       security:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/ClassComparisonList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -3003,11 +3070,11 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/BulkResult'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -3027,15 +3094,21 @@ paths:
       - S02
       x-devs:
       - A-01
+      parameters:
+      - name: nationalId
+        in: query
+        required: false
+        schema:
+          type: string
       security:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/DuplicateCheck'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -3065,11 +3138,11 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/ImportJob'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -3099,11 +3172,11 @@ paths:
               type: object
       responses:
         '200':
-          description: בוצע
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/ImportJob'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -3212,11 +3285,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/StudentAttendance'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -3251,11 +3324,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/StudentGrades'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -3363,11 +3436,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/StudentNoteList'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -3439,11 +3512,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/StudentSummary'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -3629,6 +3702,39 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   /terms:
+    get:
+      tags:
+      - הגדרות
+      summary: I03 · פרטי המוסד והגדרות
+      description: 'משמש את המסכים: I03 פרטי המוסד והגדרות'
+      operationId: getterms
+      x-screens:
+      - I03
+      x-devs:
+      - B-03
+      parameters:
+      - name: yearId
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: הצלחה
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TermList'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
     post:
       tags:
       - הגדרות
@@ -3696,11 +3802,11 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: הצלחה (הסכמה המפורטת תושלם על ידי בעלת המשאב)
+          description: הצלחה
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/UserAccountPage'
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
@@ -4569,6 +4675,1666 @@ components:
           type: array
           items:
             type: string
+      required:
+      - items
+    Group:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - study
+          - special
+        gradeLevel:
+          type: string
+          nullable: true
+        subjectId:
+          type: string
+          nullable: true
+        teacherId:
+          type: string
+          nullable: true
+        studentIds:
+          type: array
+          items:
+            type: string
+        memberCount:
+          type: integer
+      required:
+      - id
+      - name
+      - type
+      - gradeLevel
+      - subjectId
+      - teacherId
+      - studentIds
+      - memberCount
+    ImportJob:
+      type: object
+      properties:
+        id:
+          type: string
+        fileName:
+          type: string
+        status:
+          type: string
+          enum:
+          - validated
+          - committed
+          - cancelled
+        totalRows:
+          type: integer
+        toCreate:
+          type: integer
+        toUpdate:
+          type: integer
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              row:
+                type: integer
+              field:
+                type: string
+              message:
+                type: string
+            required:
+            - row
+            - field
+            - message
+        committedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - fileName
+      - status
+      - totalRows
+      - toCreate
+      - toUpdate
+      - errors
+      - committedAt
+      - createdAt
+    ClassTransfer:
+      type: object
+      properties:
+        id:
+          type: string
+        studentId:
+          type: string
+        fromClassId:
+          type: string
+        toClassId:
+          type: string
+        effectiveDate:
+          type: string
+          format: date
+        reason:
+          type: string
+          nullable: true
+        transferredBy:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - studentId
+      - fromClassId
+      - toClassId
+      - effectiveDate
+      - reason
+      - transferredBy
+      - createdAt
+    StudentNote:
+      type: object
+      properties:
+        id:
+          type: string
+        studentId:
+          type: string
+        authorId:
+          type: string
+        type:
+          type: string
+          enum:
+          - positive
+          - discipline
+          - other
+        severity:
+          type: string
+          enum:
+          - low
+          - medium
+          - high
+          nullable: true
+        text:
+          type: string
+        visibleToParent:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - studentId
+      - authorId
+      - type
+      - severity
+      - text
+      - visibleToParent
+      - createdAt
+    GradeChange:
+      type: object
+      properties:
+        id:
+          type: string
+        gradeId:
+          type: string
+        studentId:
+          type: string
+        assessmentId:
+          type: string
+        changedBy:
+          type: string
+        oldScore:
+          type: number
+          nullable: true
+        newScore:
+          type: number
+          nullable: true
+        reason:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - gradeId
+      - studentId
+      - assessmentId
+      - changedBy
+      - oldScore
+      - newScore
+      - reason
+      - createdAt
+    GradingWeight:
+      type: object
+      properties:
+        id:
+          type: string
+        termId:
+          type: string
+          nullable: true
+        gradeLevel:
+          type: string
+        subjectId:
+          type: string
+        weights:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum:
+                - exam
+                - quiz
+                - assignment
+              percent:
+                type: number
+            required:
+            - type
+            - percent
+      required:
+      - id
+      - termId
+      - gradeLevel
+      - subjectId
+      - weights
+    Transcript:
+      type: object
+      properties:
+        id:
+          type: string
+        studentId:
+          type: string
+        classId:
+          type: string
+        termId:
+          type: string
+        version:
+          type: integer
+        subjects:
+          type: array
+          items:
+            type: object
+            properties:
+              subjectId:
+                type: string
+              finalScore:
+                type: number
+                nullable: true
+            required:
+            - subjectId
+            - finalScore
+        homeroomNote:
+          type: string
+          nullable: true
+        generatedBy:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - studentId
+      - classId
+      - termId
+      - version
+      - subjects
+      - homeroomNote
+      - generatedBy
+      - createdAt
+    Session:
+      type: object
+      properties:
+        id:
+          type: string
+        userAgent:
+          type: string
+          nullable: true
+        ipApprox:
+          type: string
+          nullable: true
+        lastSeenAt:
+          type: string
+          format: date-time
+        current:
+          type: boolean
+      required:
+      - id
+      - userAgent
+      - ipApprox
+      - lastSeenAt
+      - current
+    ActivityLog:
+      type: object
+      properties:
+        id:
+          type: string
+        action:
+          type: string
+        details:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - action
+      - details
+      - createdAt
+    VisibilitySetting:
+      type: object
+      properties:
+        id:
+          type: string
+        infoType:
+          type: string
+          enum:
+          - attendance
+          - grades
+          - notes
+          - timetable
+        parent:
+          type: boolean
+        student:
+          type: boolean
+        teacher:
+          type: boolean
+      required:
+      - id
+      - infoType
+      - parent
+      - student
+      - teacher
+    GradeLevel:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        order:
+          type: integer
+        classCount:
+          type: integer
+      required:
+      - id
+      - name
+      - order
+      - classCount
+    Term:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        status:
+          type: string
+          enum:
+          - open
+          - closed
+      required:
+      - id
+      - name
+      - startDate
+      - endDate
+      - status
+    LessonSubstitution:
+      type: object
+      properties:
+        id:
+          type: string
+        lessonId:
+          type: string
+        date:
+          type: string
+          format: date
+        absentTeacherId:
+          type: string
+        substituteTeacherId:
+          type: string
+        assignedBy:
+          type: string
+      required:
+      - id
+      - lessonId
+      - date
+      - absentTeacherId
+      - substituteTeacherId
+      - assignedBy
+    AttendanceRule:
+      type: object
+      properties:
+        streakDays:
+          type: integer
+        monthlyAbsences:
+          type: integer
+        autoNotifyParents:
+          type: boolean
+        messageTemplate:
+          type: string
+          nullable: true
+      required:
+      - streakDays
+      - monthlyAbsences
+      - autoNotifyParents
+      - messageTemplate
+    NotificationLog:
+      type: object
+      properties:
+        id:
+          type: string
+        studentId:
+          type: string
+        alertId:
+          type: string
+          nullable: true
+        content:
+          type: string
+        status:
+          type: string
+          enum:
+          - logged
+          - sent
+          - failed
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - studentId
+      - alertId
+      - content
+      - status
+      - createdAt
+    AttendanceException:
+      type: object
+      properties:
+        id:
+          type: string
+        studentId:
+          type: string
+        classId:
+          type: string
+        date:
+          type: string
+          format: date
+        type:
+          type: string
+          enum:
+          - late
+          - early_leave
+        time:
+          type: string
+        reason:
+          type: string
+          nullable: true
+        requestedBy:
+          type: string
+        status:
+          type: string
+          enum:
+          - pending
+          - approved
+          - rejected
+        decidedBy:
+          type: string
+          nullable: true
+        decisionNote:
+          type: string
+          nullable: true
+        decidedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - studentId
+      - classId
+      - date
+      - type
+      - time
+      - reason
+      - requestedBy
+      - status
+      - decidedBy
+      - decisionNote
+      - decidedAt
+      - createdAt
+    Institution:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - elementary
+          - middle
+          - high
+          - mixed
+        address:
+          type: string
+        phone:
+          type: string
+        contactEmail:
+          type: string
+        activeYearId:
+          type: string
+      required:
+      - id
+      - name
+      - type
+    GroupPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+        total:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+      required:
+      - items
+      - total
+      - page
+      - size
+    ActivityLogPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityLog'
+        total:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+      required:
+      - items
+      - total
+      - page
+      - size
+    NotificationLogPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationLog'
+        total:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+      required:
+      - items
+      - total
+      - page
+      - size
+    AttendanceExceptionPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttendanceException'
+        total:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+      required:
+      - items
+      - total
+      - page
+      - size
+    StudentNoteList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentNote'
+      required:
+      - items
+    GradeChangeList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GradeChange'
+      required:
+      - items
+    GradingWeightList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GradingWeight'
+      required:
+      - items
+    TranscriptList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transcript'
+      required:
+      - items
+    SessionList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Session'
+      required:
+      - items
+    VisibilitySettingList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/VisibilitySetting'
+      required:
+      - items
+    GradeLevelList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GradeLevel'
+      required:
+      - items
+    TermList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Term'
+      required:
+      - items
+    DashboardSummary:
+      type: object
+      properties:
+        attendanceTodayPercent:
+          type: number
+          minimum: 0
+          maximum: 100
+          nullable: true
+          description: null = אף כיתה לא דיווחה היום
+        studentsWithStreak:
+          type: integer
+        assessmentsWithoutGrades:
+          type: integer
+        lessonsWithoutTeacherToday:
+          type: integer
+        calculatedAt:
+          type: string
+          format: date-time
+      required:
+      - attendanceTodayPercent
+      - studentsWithStreak
+      - assessmentsWithoutGrades
+      - lessonsWithoutTeacherToday
+      - calculatedAt
+    ActionItem:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - attendance_alert
+          - exit_request
+          - pending_invite
+        id:
+          type: string
+        title:
+          type: string
+        studentId:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+      - type
+      - id
+      - title
+      - studentId
+      - createdAt
+    AssessmentStats:
+      type: object
+      properties:
+        assessmentId:
+          type: string
+        count:
+          type: integer
+        average:
+          type: number
+          nullable: true
+          description: null = אין עדיין נתונים לחישוב
+        median:
+          type: number
+          nullable: true
+          description: null = אין עדיין נתונים לחישוב
+        stdDev:
+          type: number
+          nullable: true
+          description: null = אין עדיין נתונים לחישוב
+        representative:
+          type: boolean
+          description: false כשיש פחות מ-5 תלמידים
+      required:
+      - assessmentId
+      - count
+      - average
+      - median
+      - stdDev
+      - representative
+    ClassComparison:
+      type: object
+      properties:
+        classId:
+          type: string
+        average:
+          type: number
+          nullable: true
+          description: null = אין עדיין נתונים לחישוב
+        median:
+          type: number
+          nullable: true
+          description: null = אין עדיין נתונים לחישוב
+        studentCount:
+          type: integer
+        representative:
+          type: boolean
+      required:
+      - classId
+      - average
+      - median
+      - studentCount
+      - representative
+    InstitutionAttendance:
+      type: object
+      properties:
+        todayPercent:
+          type: number
+          minimum: 0
+          maximum: 100
+          nullable: true
+          description: null = אין עדיין נתונים לחישוב
+        monthPercent:
+          type: number
+          minimum: 0
+          maximum: 100
+          nullable: true
+          description: null = אין עדיין נתונים לחישוב
+        studentsWithAlert:
+          type: integer
+        classes:
+          type: array
+          items:
+            type: object
+            properties:
+              classId:
+                type: string
+              reported:
+                type: boolean
+                description: false = הכיתה לא דיווחה היום
+              todayPercent:
+                type: number
+                minimum: 0
+                maximum: 100
+                nullable: true
+              monthPercent:
+                type: number
+                minimum: 0
+                maximum: 100
+                nullable: true
+              previousMonthPercent:
+                type: number
+                minimum: 0
+                maximum: 100
+                nullable: true
+            required:
+            - classId
+            - reported
+            - todayPercent
+            - monthPercent
+            - previousMonthPercent
+      required:
+      - todayPercent
+      - monthPercent
+      - studentsWithAlert
+      - classes
+    MonthlyAttendanceReport:
+      type: object
+      properties:
+        classId:
+          type: string
+        month:
+          type: string
+          description: "'YYYY-MM'"
+        threshold:
+          type: number
+          minimum: 0
+          maximum: 100
+        classAveragePercent:
+          type: number
+          minimum: 0
+          maximum: 100
+          nullable: true
+          description: null = אין עדיין נתונים לחישוב
+        belowThresholdCount:
+          type: integer
+        students:
+          type: array
+          items:
+            type: object
+            properties:
+              studentId:
+                type: string
+              firstName:
+                type: string
+              lastName:
+                type: string
+              presentDays:
+                type: integer
+              absences:
+                type: integer
+              lates:
+                type: integer
+              percent:
+                type: number
+                minimum: 0
+                maximum: 100
+                nullable: true
+            required:
+            - studentId
+            - firstName
+            - lastName
+            - presentDays
+            - absences
+            - lates
+            - percent
+      required:
+      - classId
+      - month
+      - threshold
+      - classAveragePercent
+      - belowThresholdCount
+      - students
+    ClassOverview:
+      type: object
+      properties:
+        classId:
+          type: string
+        name:
+          type: string
+        grade:
+          type: string
+        homeroomTeacherId:
+          type: string
+          nullable: true
+        studentCount:
+          type: integer
+        attendanceMonthPercent:
+          type: number
+          minimum: 0
+          maximum: 100
+          nullable: true
+          description: null = אין עדיין נתונים לחישוב
+        gradeAverage:
+          type: number
+          nullable: true
+          description: null = אין עדיין נתונים לחישוב
+        studentsWithAlert:
+          type: integer
+        students:
+          type: array
+          items:
+            type: object
+            properties:
+              studentId:
+                type: string
+              firstName:
+                type: string
+              lastName:
+                type: string
+              attendancePercent:
+                type: number
+                minimum: 0
+                maximum: 100
+                nullable: true
+              average:
+                type: number
+                nullable: true
+              tags:
+                type: array
+                items:
+                  type: string
+            required:
+            - studentId
+            - firstName
+            - lastName
+            - attendancePercent
+            - average
+            - tags
+      required:
+      - classId
+      - name
+      - grade
+      - homeroomTeacherId
+      - studentCount
+      - attendanceMonthPercent
+      - gradeAverage
+      - studentsWithAlert
+      - students
+    InvitePreview:
+      type: object
+      properties:
+        institutionName:
+          type: string
+        role:
+          type: string
+          enum:
+          - management
+          - coordinator
+          - secretary
+          - homeroom
+          - teacher
+          - parent
+          - student
+        email:
+          type: string
+        status:
+          type: string
+          enum:
+          - valid
+          - expired
+          - used
+          description: "expired או used: המסך מציג הסבר ובקשה להזמנה חדשה"
+      required:
+      - institutionName
+      - role
+      - email
+      - status
+    LessonValidation:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        conflicts:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum:
+                - teacher
+                - class
+                - room
+                - room_inactive
+              lessonId:
+                type: string
+                nullable: true
+                description: השיעור שמתנגש, כשיש כזה
+              message:
+                type: string
+            required:
+            - type
+            - lessonId
+            - message
+      required:
+      - ok
+      - conflicts
+    MyPermissions:
+      type: object
+      properties:
+        role:
+          type: string
+          enum:
+          - management
+          - coordinator
+          - secretary
+          - homeroom
+          - teacher
+          - parent
+          - student
+        roleName:
+          type: string
+        scope:
+          type: object
+          properties:
+            classIds:
+              type: array
+              items:
+                type: string
+            studentIds:
+              type: array
+              items:
+                type: string
+          required:
+          - classIds
+          - studentIds
+        screens:
+          type: array
+          items:
+            type: object
+            properties:
+              screenId:
+                type: string
+              name:
+                type: string
+              module:
+                type: string
+              level:
+                type: string
+                enum:
+                - full
+                - scoped
+                - read
+            required:
+            - screenId
+            - name
+            - module
+            - level
+      required:
+      - role
+      - roleName
+      - scope
+      - screens
+    TeachingCard:
+      type: object
+      properties:
+        classId:
+          type: string
+        subjectId:
+          type: string
+        openAssessments:
+          type: integer
+        studentsWithoutGrade:
+          type: integer
+      required:
+      - classId
+      - subjectId
+      - openAssessments
+      - studentsWithoutGrade
+    MyDay:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        isDayOff:
+          type: boolean
+        dayOffTitle:
+          type: string
+          nullable: true
+        lessons:
+          type: array
+          items:
+            type: object
+            properties:
+              lessonId:
+                type: string
+              period:
+                type: integer
+              classId:
+                type: string
+              subjectId:
+                type: string
+              roomId:
+                type: string
+                nullable: true
+              substituteTeacherId:
+                type: string
+                nullable: true
+              roomChanged:
+                type: boolean
+            required:
+            - lessonId
+            - period
+            - classId
+            - subjectId
+            - roomId
+            - substituteTeacherId
+            - roomChanged
+      required:
+      - date
+      - isDayOff
+      - dayOffTitle
+      - lessons
+    WeekSchedule:
+      type: object
+      properties:
+        view:
+          type: string
+          enum:
+          - class
+          - teacher
+        id:
+          type: string
+        weekStart:
+          type: string
+          format: date
+        daysOff:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+              title:
+                type: string
+            required:
+            - date
+            - title
+        lessons:
+          type: array
+          items:
+            type: object
+            properties:
+              lessonId:
+                type: string
+              dayOfWeek:
+                type: integer
+              period:
+                type: integer
+              classId:
+                type: string
+              subjectId:
+                type: string
+              teacherId:
+                type: string
+              roomId:
+                type: string
+                nullable: true
+              substituteTeacherId:
+                type: string
+                nullable: true
+            required:
+            - lessonId
+            - dayOfWeek
+            - period
+            - classId
+            - subjectId
+            - teacherId
+            - roomId
+            - substituteTeacherId
+      required:
+      - view
+      - id
+      - weekStart
+      - daysOff
+      - lessons
+    SearchResults:
+      type: object
+      properties:
+        q:
+          type: string
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum:
+                - student
+                - staff
+                - class
+              id:
+                type: string
+              name:
+                type: string
+              detail:
+                type: string
+                description: כיתה לתלמיד, תפקיד לאיש צוות
+            required:
+            - type
+            - id
+            - name
+            - detail
+      required:
+      - q
+      - items
+    AvailableTeacher:
+      type: object
+      properties:
+        teacherId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        subjectIds:
+          type: array
+          items:
+            type: string
+        lessonsThatDay:
+          type: integer
+      required:
+      - teacherId
+      - firstName
+      - lastName
+      - subjectIds
+      - lessonsThatDay
+    StaffImportCheck:
+      type: object
+      properties:
+        totalRows:
+          type: integer
+        toCreate:
+          type: integer
+        toUpdate:
+          type: integer
+        rows:
+          type: array
+          items:
+            type: object
+            properties:
+              row:
+                type: integer
+              name:
+                type: string
+              email:
+                type: string
+              status:
+                type: string
+                enum:
+                - new
+                - update
+                - error
+              error:
+                type: string
+                nullable: true
+            required:
+            - row
+            - name
+            - email
+            - status
+            - error
+      required:
+      - totalRows
+      - toCreate
+      - toUpdate
+      - rows
+    ImportResult:
+      type: object
+      properties:
+        created:
+          type: integer
+        updated:
+          type: integer
+        failed:
+          type: integer
+      required:
+      - created
+      - updated
+      - failed
+    StaffProfileDetail:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+          nullable: true
+        roles:
+          type: array
+          items:
+            type: string
+            enum:
+            - management
+            - coordinator
+            - secretary
+            - homeroom
+            - teacher
+            - parent
+            - student
+        status:
+          type: string
+          enum:
+          - active
+          - disabled
+          - invited
+        startDate:
+          type: string
+          format: date
+          nullable: true
+        teaching:
+          type: array
+          items:
+            type: object
+            properties:
+              subjectId:
+                type: string
+              classId:
+                type: string
+              hoursPerWeek:
+                type: integer
+            required:
+            - subjectId
+            - classId
+            - hoursPerWeek
+      required:
+      - id
+      - firstName
+      - lastName
+      - email
+      - phone
+      - roles
+      - status
+      - startDate
+      - teaching
+    BulkResult:
+      type: object
+      properties:
+        succeeded:
+          type: integer
+        failed:
+          type: array
+          items:
+            type: object
+            properties:
+              studentId:
+                type: string
+              message:
+                type: string
+            required:
+            - studentId
+            - message
+      required:
+      - succeeded
+      - failed
+    DuplicateCheck:
+      type: object
+      properties:
+        duplicate:
+          type: boolean
+        studentId:
+          type: string
+          nullable: true
+          description: התלמיד הקיים, כשיש כפילות
+      required:
+      - duplicate
+      - studentId
+    StudentAttendance:
+      type: object
+      properties:
+        studentId:
+          type: string
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
+        percent:
+          type: number
+          minimum: 0
+          maximum: 100
+          nullable: true
+          description: null = אין עדיין נתונים לחישוב
+        absences:
+          type: integer
+        lates:
+          type: integer
+        records:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+              period:
+                type: integer
+                nullable: true
+              status:
+                type: string
+                enum:
+                - present
+                - absent
+                - late
+              note:
+                type: string
+                nullable: true
+            required:
+            - date
+            - period
+            - status
+            - note
+      required:
+      - studentId
+      - from
+      - to
+      - percent
+      - absences
+      - lates
+      - records
+    StudentGrades:
+      type: object
+      properties:
+        studentId:
+          type: string
+        termId:
+          type: string
+          nullable: true
+        subjects:
+          type: array
+          items:
+            type: object
+            properties:
+              subjectId:
+                type: string
+              average:
+                type: number
+                nullable: true
+              trend:
+                type: string
+                enum:
+                - up
+                - down
+                - flat
+                nullable: true
+              grades:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    assessmentId:
+                      type: string
+                    title:
+                      type: string
+                    date:
+                      type: string
+                      format: date
+                      nullable: true
+                    score:
+                      type: number
+                      nullable: true
+                  required:
+                  - assessmentId
+                  - title
+                  - date
+                  - score
+              feedback:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    text:
+                      type: string
+                    authorId:
+                      type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+                  required:
+                  - text
+                  - authorId
+                  - createdAt
+            required:
+            - subjectId
+            - average
+            - trend
+            - grades
+            - feedback
+      required:
+      - studentId
+      - termId
+      - subjects
+    StudentSummary:
+      type: object
+      properties:
+        studentId:
+          type: string
+        attendanceMonthPercent:
+          type: number
+          minimum: 0
+          maximum: 100
+          nullable: true
+          description: null = אין עדיין נתונים לחישוב
+        gradeAverage:
+          type: number
+          nullable: true
+          description: null = אין עדיין נתונים לחישוב
+        openNotes:
+          type: integer
+        tags:
+          type: array
+          items:
+            type: string
+      required:
+      - studentId
+      - attendanceMonthPercent
+      - gradeAverage
+      - openNotes
+      - tags
+    UserAccount:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+            enum:
+            - management
+            - coordinator
+            - secretary
+            - homeroom
+            - teacher
+            - parent
+            - student
+        status:
+          type: string
+          enum:
+          - active
+          - disabled
+          - invited
+        lastLoginAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - id
+      - firstName
+      - lastName
+      - email
+      - roles
+      - status
+      - lastLoginAt
+    UserAccountPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserAccount'
+        total:
+          type: integer
+        page:
+          type: integer
+        size:
+          type: integer
+      required:
+      - items
+      - total
+      - page
+      - size
+    ActionItemList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActionItem'
+      required:
+      - items
+    ClassComparisonList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClassComparison'
+      required:
+      - items
+    TeachingCardList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeachingCard'
+      required:
+      - items
+    AvailableTeacherList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AvailableTeacher'
+      required:
+      - items
+    RoleSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        key:
+          type: string
+        name:
+          type: string
+        builtIn:
+          type: boolean
+          description: true = תפקיד מובנה, שלא נמחק
+        userCount:
+          type: integer
+      required:
+      - id
+      - key
+      - name
+      - builtIn
+      - userCount
+    RoleSummaryList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleSummary'
       required:
       - items
   responses:

@@ -1,10 +1,13 @@
+import { env } from '../config/env';
 import { connectDb, disconnectDb } from '../db/connect';
 import { runModuleSeeds } from '../routes/loader';
 import { DEMO_PASSWORD, seedCore } from './core';
+import { assertSafeToSeed } from './guard';
 import { stfMail } from './names';
 import { seedShared } from './shared';
 
 async function main(): Promise<void> {
+  assertSafeToSeed(env.MONGODB_URI, process.env.SEED_PASSWORD);
   await connectDb();
   const counts = await seedCore();
   // the shared collections before the modules: module seeds may read them

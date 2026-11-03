@@ -1,5 +1,7 @@
 # מודול חדש ב-30 דקות
 
+> מתחילות את ספרינט 2? קראי קודם את [sprint-2-schemas.md](sprint-2-schemas.md): איך יודעים אילו אוספים לבנות, והכללים.
+
 1. פתחי ענף מ-`dev`: `feature/PEDB-12-I08-schema`.
 2. צרי את המודול: `npm run new:module -- room --screen I08` (שם בלשון יחיד באנגלית ומזהה המסך).
 3. ערכי `src/modules/rooms/model.ts`: השדות של המשאב. השתמשי בעמוד המסך באפיון ובחוזה ב-`openapi/openapi.yaml`.
