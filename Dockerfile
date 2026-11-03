@@ -13,5 +13,7 @@ ENV NODE_ENV=production
 COPY package*.json ./
 RUN npm ci --omit=dev
 COPY --from=build /app/dist ./dist
+# do not run as root inside the container
+USER node
 EXPOSE 4000
 CMD ["node", "dist/server.js"]
