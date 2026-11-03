@@ -1,4 +1,5 @@
 import { AcademicYear, Institution } from '../../models';
+import { toDateOnly } from '../../utils/dateOnly';
 import { Term } from './model';
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -15,13 +16,13 @@ export async function seed(): Promise<void> {
   const mid = start + Math.floor((end - start) / 2);
 
   const terms = [
-    { name: 'מחצית א', startDate: new Date(start), endDate: new Date(mid), status: 'active' },
-    { name: 'מחצית ב', startDate: new Date(mid + DAY), endDate: new Date(end), status: 'planned' },
+    { name: 'מחצית א', startDate: toDateOnly(new Date(start)), endDate: toDateOnly(new Date(mid)), status: 'open' },
+    { name: 'מחצית ב', startDate: toDateOnly(new Date(mid + DAY)), endDate: toDateOnly(new Date(end)), status: 'open' },
   ];
   for (const t of terms) {
     await Term.updateOne(
-      { institutionId: inst._id, academicYearId: year._id, name: t.name },
-      { $setOnInsert: { ...t, institutionId: inst._id, academicYearId: year._id } },
+      { yearId: year._id, name: t.name },
+      { $set: { ...t, institutionId: inst._id, yearId: year._id } },
       { upsert: true },
     );
   }
