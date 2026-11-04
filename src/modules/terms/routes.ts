@@ -7,8 +7,6 @@ import { Term } from './model';
 
 const router = Router();
 
-const toDateOnly = (d: Date): string => d.toISOString().slice(0, 10);
-
 // GET /api/terms?yearId=...  (I03 · מחזורי הערכה)
 // התשובה זהה לסכמה TermList בחוזה: { items: Term[] }
 router.get(
@@ -22,7 +20,7 @@ router.get(
             if (typeof yearId !== 'string' || !Types.ObjectId.isValid(yearId)) {
                 throw new AppError(400, 'BAD_ID', 'מזהה שנת לימודים לא תקין');
             }
-            filter.academicYearId = yearId;
+            filter.yearId = yearId;
         }
 
         const terms = await Term.find(filter).sort({ startDate: 1 }).lean();
@@ -30,10 +28,9 @@ router.get(
             items: terms.map((t) => ({
                 id: String(t._id),
                 name: t.name,
-                startDate: toDateOnly(t.startDate),
-                endDate: toDateOnly(t.endDate),
-                // בחוזה רק open/closed; planned ו-active מוצגים כ-open
-                status: t.status === 'closed' ? 'closed' : 'open',
+                startDate: t.startDate,
+                endDate: t.endDate,
+                status: t.status,
             })),
         });
     }),
