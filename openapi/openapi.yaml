@@ -942,11 +942,11 @@ paths:
       security:
       - bearerAuth: []
       requestBody:
-        required: false
+        required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/TeachingAssignmentInput'
       responses:
         '204':
           description: בוצע
@@ -958,6 +958,30 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+  /teaching-assignments:
+    get:
+      tags:
+      - הגדרות
+      summary: I06 · מקצועות ושיוכי הוראה
+      description: 'משמש את המסכים: I06 מקצועות ושיוכי הוראה'
+      operationId: getteachingAssignments
+      x-screens:
+      - I06
+      x-devs:
+      - B-07
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: כיתות, מורות ושיוכים לצורך טופס השיוך
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeachingAssignmentData'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
   /dashboard/summary:
     get:
       tags:
@@ -3510,11 +3534,11 @@ paths:
       security:
       - bearerAuth: []
       requestBody:
-        required: false
+        required: true
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/SubjectInput'
       responses:
         '201':
           description: נוצר
@@ -3525,14 +3549,16 @@ paths:
                 properties:
                   id:
                     type: string
+                required:
+                - id
         '400':
           $ref: '#/components/responses/ValidationError'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
+        '409':
+          description: שם או קוד המקצוע כבר קיימים במוסד
   /terms:
     post:
       tags:
@@ -3867,6 +3893,57 @@ components:
       - id
       - name
       - code
+    SubjectInput:
+      type: object
+      properties:
+        name: *id001
+        code: *id001
+        grades:
+          type: array
+          items: *id001
+      required:
+      - name
+      - code
+      - grades
+    TeachingAssignment:
+      type: object
+      properties:
+        classId: *id001
+        subjectId: *id001
+        teacherId: *id001
+      required:
+      - classId
+      - subjectId
+      - teacherId
+    TeachingAssignmentInput:
+      type: object
+      properties:
+        subjectId: *id001
+        teacherId:
+          type: string
+          nullable: true
+      required:
+      - subjectId
+      - teacherId
+    TeachingAssignmentData:
+      type: object
+      properties:
+        classes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchoolClass'
+        teachers:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffMember'
+        assignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeachingAssignment'
+      required:
+      - classes
+      - teachers
+      - assignments
     StaffMember:
       type: object
       properties:

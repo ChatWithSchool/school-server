@@ -1,0 +1,18 @@
+import { Schema, model, type InferSchemaType } from 'mongoose';
+
+const teachingAssignmentSchema = new Schema(
+  {
+    institutionId: { type: Schema.Types.ObjectId, ref: 'Institution', required: true, index: true },
+    classId: { type: Schema.Types.ObjectId, ref: 'SchoolClass', required: true },
+    subjectId: { type: Schema.Types.ObjectId, ref: 'Subject', required: true },
+    teacherId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  },
+  { timestamps: true, collection: 'teaching_assignments' },
+);
+teachingAssignmentSchema.index(
+  { institutionId: 1, classId: 1, subjectId: 1 },
+  { unique: true },
+);
+
+export type TeachingAssignmentDoc = InferSchemaType<typeof teachingAssignmentSchema>;
+export const TeachingAssignment = model('TeachingAssignment', teachingAssignmentSchema);
