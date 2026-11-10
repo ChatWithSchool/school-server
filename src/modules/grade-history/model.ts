@@ -11,7 +11,7 @@ const gradeHistorySchema = new Schema(
     changeReason: { type: String, trim: true, maxlength: 500 },
     changedAt: { type: Date, required: true, default: Date.now },
   },
-  { collection: 'grade_history' },
+  { collection: 'grade_history', timestamps: true },
 );
 
 gradeHistorySchema.index({ institutionId: 1, studentId: 1, changedAt: -1 });

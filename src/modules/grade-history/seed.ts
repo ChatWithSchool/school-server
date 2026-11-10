@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
-import { GradeHistory, Institution, Student, User } from '../../models';
+import { Institution, Student, User } from '../../models';
+import { GradeHistory } from './model';
 
 type SeedMode = 'empty' | 'few' | 'many';
 type GradeReference = { _id: Types.ObjectId; studentId: Types.ObjectId };

@@ -19,4 +19,3 @@ export { Grade } from './grade.model';
 export { GradeFeedback } from './gradeFeedback.model';
 export { AttendanceRecord } from './attendanceRecord.model';
 export { AttendanceAlert } from './attendanceAlert.model';
-export { GradeHistory, GradeHistoryDoc } from './gradeHistory.model';
