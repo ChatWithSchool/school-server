@@ -1,4 +1,5 @@
 import { Institution, Lesson, User } from '../../models';
+import { addDays, toDateOnly, weekday } from '../../utils/dateOnly';
 import { LessonSubstitution } from './model';
 
 /** Idempotent: upserts by institution + lesson + date, so running the seed again never duplicates. */
@@ -16,21 +17,39 @@ export async function seed(): Promise<void> {
     return;
   }
 
-  const teachers = await User.find({ institutionId: inst._id, roles: 'teacher' }).sort({ email: 1 });
+  // active teachers only
+  const teachers = await User.find({
+    institutionId: inst._id,
+    roles: 'teacher',
+    status: 'active',
+  }).sort({ email: 1 });
 
-  // Fixed dates, so every run produces the same data.
-  const dates = ['2026-10-27', '2026-10-28'];
+  // the date of each lesson's weekday, in the current school week (Sunday to Thursday)
+  const today = toDateOnly(new Date());
+  const weekStart = addDays(today, -weekday(today));
 
-  for (let i = 0; i < lessons.length; i++) {
-    const lesson = lessons[i];
-    const absent = lesson.teacherId;
-    const substitute = teachers.find((t) => String(t._id) !== String(absent));
+  for (const lesson of lessons) {
+    // a substitute must be free in that slot
+    const busy = new Set(
+      (
+        await Lesson.distinct('teacherId', {
+          institutionId: inst._id,
+          dayOfWeek: lesson.dayOfWeek,
+          period: lesson.period,
+        })
+      ).map(String),
+    );
+    const substitute = teachers.find((t) => !busy.has(String(t._id)));
     if (!substitute) continue;
     await LessonSubstitution.updateOne(
-      { institutionId: inst._id, lessonId: lesson._id, date: dates[i] },
+      {
+        institutionId: inst._id,
+        lessonId: lesson._id,
+        date: addDays(weekStart, lesson.dayOfWeek),
+      },
       {
         $setOnInsert: {
-          absentTeacherId: absent,
+          absentTeacherId: lesson.teacherId,
           substituteTeacherId: substitute._id,
           assignedBy: author._id,
         },
