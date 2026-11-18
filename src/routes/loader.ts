@@ -27,8 +27,7 @@ export function mountModules(app: Express, middleware: Router[] = []): string[] 
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const mod = require(file) as { default?: Router };
     if (mod.default) {
-      app.use('/api', ...middleware, mod.default);
-      mounted.push(name);
+app.use(`/api/${name}`, ...middleware, mod.default);      mounted.push(name);
     }
   }
   return mounted;
