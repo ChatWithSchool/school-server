@@ -5,22 +5,22 @@ import type { RoleKey } from '../../permissions';
 
 const app = createApp();
 const tokenFor = (roles: RoleKey[]) =>
-    signToken({ sub: '64b000000000000000000001', institutionId: '64b000000000000000000002', roles });
+  signToken({ sub: '64b000000000000000000001', institutionId: '64b000000000000000000002', roles });
 
 describe('GET /api/institutions/:id (no database needed)', () => {
-    const url = '/api/institutions/64b000000000000000000002';
+  const url = '/api/institutions/64b000000000000000000002';
 
-    it('requires a token', async () => {
-        const res = await request(app).get(url);
-        expect(res.status).toBe(401);
-        expect(res.body.error.code).toBe('UNAUTHENTICATED');
-    });
+  it('requires a token', async () => {
+    const res = await request(app).get(url);
+    expect(res.status).toBe(401);
+    expect(res.body.error.code).toBe('UNAUTHENTICATED');
+  });
 
-    it('is forbidden for a role without access to I03', async () => {
-        const res = await request(app)
-            .get(url)
-            .set('Authorization', `Bearer ${tokenFor(['secretary'])}`);
-        expect(res.status).toBe(403);
-        expect(res.body.error.code).toBe('FORBIDDEN');
-    });
+  it('is forbidden for a role without access to I03', async () => {
+    const res = await request(app)
+      .get(url)
+      .set('Authorization', `Bearer ${tokenFor(['secretary'])}`);
+    expect(res.status).toBe(403);
+    expect(res.body.error.code).toBe('FORBIDDEN');
+  });
 });
