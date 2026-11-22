@@ -15,7 +15,6 @@
 
 **חלופות:**
 
-- **Docker:** מי שמותקן אצלה Docker יכולה להריץ `docker compose up -d` במקום ההתקנה.
 - **MongoDB Atlas:** מסד חינמי בענן, למי שלא יכולה להתקין. יוצרות cluster ומדביקות את הכתובת שלו ב-`MONGODB_URI` שב-`.env`.
 
 ### 2. להריץ את השרת
@@ -29,7 +28,7 @@ npm run dev                     # השרת על http://localhost:4000
 
 משתמש הדגמה: `yuval.mizrahi@school.example` עם הסיסמה `Demo1234!` (הנהלה). משתמשים נוספים מופיעים בהדפסה של `npm run seed`.
 
-בדיקת תקינות: `curl http://localhost:4000/api/health`
+בדיקת תקינות: פותחות בדפדפן את `http://localhost:4000/api/health`. את שאר ה-endpoints בודקות ב-Postman ([docs/new-module.md](docs/new-module.md#איך-בודקים-endpoint-ידנית)).
 
 ### 3. לראות את הנתונים ב-VS Code
 
@@ -42,8 +41,8 @@ npm run dev                     # השרת על http://localhost:4000
 
 ### תקלות נפוצות
 
-- **הרצתי seed ולא רואה נתונים:** כנראה רצים אצלך שני שרתי MongoDB על אותו פורט (גם התקנה של Windows וגם Docker). השרת מתחבר לאחד מהם, ואת מסתכלת על השני. בחרי אחד: עצרי את Docker (`docker compose down`), או עצרי את השירות `MongoDB` ב-Windows (Services > MongoDB > Stop).
-- **`ECONNREFUSED 127.0.0.1:27017`:** המסד לא רץ. ב-Windows: Services > MongoDB > Start. עם Docker: `docker compose up -d`.
+- **הרצתי seed ולא רואה נתונים:** כנראה רצים אצלך שני שרתי MongoDB על אותו פורט (גם התקנה של Windows וגם Docker). השרת מתחבר לאחד מהם, ואת מסתכלת על השני. בחרי אחד: סגרי את Docker Desktop, או עצרי את השירות `MongoDB` ב-Windows (Services > MongoDB > Stop).
+- **`ECONNREFUSED 127.0.0.1:27017`:** המסד לא רץ. ב-Windows: Services > MongoDB > Start.
 
 ## פקודות
 
