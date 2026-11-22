@@ -2567,7 +2567,6 @@ paths:
       summary: T04 · ייבוא וייצוא מערכת שעות
       description: 'משמש את המסכים: T04 ייבוא וייצוא מערכת שעות'
       operationId: getscheduleTemplate
-      x-deferred: true
       x-screens:
       - T04
       x-devs:
@@ -2576,15 +2575,20 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: נדחה מגרסה 1 (v1-lite). לא בונים את ה-endpoint הזה
-        '400':
-          $ref: '#/components/responses/ValidationError'
+          description: קובץ CSV של מערכת השעות הנוכחית של המוסד
+          content:
+            text/csv:
+              schema:
+                type: string
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+                example: attachment; filename="schedule.csv"
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
   /search:
     get:
       tags:
