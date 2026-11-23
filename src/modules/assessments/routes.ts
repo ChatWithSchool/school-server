@@ -5,139 +5,144 @@ import { Grade } from '../../models/grade.model';
 import { authorize } from '../../middleware/authorize';
 import { AppError } from '../../utils/AppError';
 import { asyncHandler } from '../../utils/asyncHandler';
+import { getScopedClassIds } from '../../services/scope';
 
 const router = Router();
 
-// פונקציית עזר לחישוב חציון
-function calculateMedian(scores: number[]): number {
-  if (scores.length === 0) return 0;
-  const sorted = [...scores].sort((a, b) => a - b);
+const MIN_REPRESENTATIVE = 5;
+
+const round2 = (n: number) => Number(n.toFixed(2));
+
+function calculateMedian(sorted: number[]): number {
   const mid = Math.floor(sorted.length / 2);
-  if (sorted.length % 2 === 0) {
-    return Number(((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2));
+  return sorted.length % 2 === 0
+    ? round2((sorted[mid - 1] + sorted[mid]) / 2)
+    : round2(sorted[mid]);
+}
+
+function summarize(rawScores: Array<number | null | undefined>) {
+  const scores = rawScores.filter((s): s is number => typeof s === 'number');
+  const count = scores.length;
+  if (count === 0) {
+    return { count, average: null, median: null, stdDev: null, representative: false };
   }
-  return Number(sorted[mid].toFixed(2));
+  const sorted = [...scores].sort((a, b) => a - b);
+  const avg = scores.reduce((a, b) => a + b, 0) / count;
+  const variance = scores.reduce((a, s) => a + (s - avg) ** 2, 0) / count;
+  return {
+    count,
+    average: round2(avg),
+    median: calculateMedian(sorted),
+    stdDev: round2(Math.sqrt(variance)),
+    representative: count >= MIN_REPRESENTATIVE,
+  };
 }
 
 // GET /api/assessments/:id/stats
 router.get(
-  '/:id/stats',
+  '/assessments/:id/stats',
   authorize('G05', 'read'),
   asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
-
     if (!Types.ObjectId.isValid(id)) {
       throw new AppError(400, 'BAD_ID', 'מזהה מבחן לא תקין');
     }
-
     const institutionId = req.user!.institutionId;
 
-    const assessment = await Assessment.findOne({
-      _id: id,
-      institutionId,
-    }).lean();
-
+    const assessment = await Assessment.findOne({ _id: id, institutionId }).lean();
     if (!assessment) {
       throw new AppError(404, 'ASSESSMENT_NOT_FOUND', 'המבחן לא נמצא');
     }
 
-    const grades = await Grade.find({
-      assessmentId: id,
-      institutionId,
-    }).lean();
-
-    // הגדרת טיפוס מפורש לציונים במקום any
-    const validGrades = grades.filter(
-      (g: { score?: number | null }) => g.score !== null && g.score !== undefined
-    );
-    const totalSubmissions = validGrades.length;
-
-    let averageScore = 0;
-    let medianScore = 0;
-    let highestScore = 0;
-    let lowestScore = 0;
-
-    if (totalSubmissions > 0) {
-      const scores = validGrades.map((g) => g.score as number);
-      const sum = scores.reduce((acc, score) => acc + score, 0);
-
-      averageScore = Number((sum / totalSubmissions).toFixed(2));
-      medianScore = calculateMedian(scores);
-      highestScore = Math.max(...scores);
-      lowestScore = Math.min(...scores);
+    if (req.accessLevel === 'scoped') {
+      const scopedClassIds = (await getScopedClassIds(req.user!.id)).map(String);
+      if (!scopedClassIds.includes(String(assessment.classId))) {
+        throw new AppError(403, 'FORBIDDEN', 'אין הרשאה למבחן זה');
+      }
     }
+
+    const grades = await Grade.find({ assessmentId: id, institutionId }).lean();
 
     res.json({
       assessmentId: id,
-      title: assessment.title,
-      totalSubmissions,
-      averageScore,
-      medianScore,
-      highestScore,
-      lowestScore,
+      ...summarize(grades.map((g) => g.score)),
     });
   }),
 );
 
-// GET /api/assessments/stats/compare
+// GET /api/stats/compare?assessmentId=&subjectId=&classIds=&termId=
 router.get(
   '/stats/compare',
   authorize('G05', 'read'),
   asyncHandler(async (req: Request, res: Response) => {
-    const { assessmentIds } = req.query;
+    const { assessmentId, subjectId, classIds, termId } = req.query;
     const institutionId = req.user!.institutionId;
 
-    if (!assessmentIds || typeof assessmentIds !== 'string') {
-      throw new AppError(400, 'INVALID_QUERY', 'יש לספק מזהי מבחנים להשוואה');
-    }
-
-    const ids = assessmentIds.split(',').map((id) => id.trim());
-    const validIds = ids.filter((id) => Types.ObjectId.isValid(id));
-
-    if (validIds.length === 0) {
-      throw new AppError(400, 'INVALID_IDS', 'לא נמצאו מזהי מבחנים תקינים');
-    }
-
-    const comparisons = [];
-
-    for (const assessmentId of validIds) {
-      const assessment = await Assessment.findOne({
-        _id: assessmentId,
-        institutionId,
-      }).lean();
-
-      if (!assessment) continue;
-
-      const grades = await Grade.find({
-        assessmentId,
-        institutionId,
-      }).lean();
-
-      const validGrades = grades.filter(
-        (g: { score?: number | null }) => g.score !== null && g.score !== undefined
-      );
-      const totalSubmissions = validGrades.length;
-
-      let averageScore = 0;
-      let medianScore = 0;
-
-      if (totalSubmissions > 0) {
-        const scores = validGrades.map((g) => g.score as number);
-        const sum = scores.reduce((acc, score) => acc + score, 0);
-        averageScore = Number((sum / totalSubmissions).toFixed(2));
-        medianScore = calculateMedian(scores);
+    const idParams = { assessmentId, subjectId, termId };
+    for (const [name, value] of Object.entries(idParams)) {
+      if (value !== undefined && (typeof value !== 'string' || !Types.ObjectId.isValid(value))) {
+        throw new AppError(400, 'BAD_ID', `פרמטר ${name} לא תקין`);
       }
-
-      comparisons.push({
-        assessmentId,
-        title: assessment.title,
-        totalSubmissions,
-        averageScore,
-        medianScore,
-      });
     }
 
-    res.json({ comparisons });
+    let requestedClassIds: string[] | undefined;
+    if (classIds !== undefined) {
+      if (typeof classIds !== 'string') {
+        throw new AppError(400, 'INVALID_QUERY', 'classIds לא תקין');
+      }
+      requestedClassIds = classIds.split(',').map((c) => c.trim());
+      if (!requestedClassIds.every((c) => Types.ObjectId.isValid(c))) {
+        throw new AppError(400, 'BAD_ID', 'מזהה כיתה לא תקין');
+      }
+    }
+
+    if (req.accessLevel === 'scoped') {
+      const scopedClassIds = (await getScopedClassIds(req.user!.id)).map(String);
+      if (requestedClassIds) {
+        if (!requestedClassIds.every((c) => scopedClassIds.includes(c))) {
+          throw new AppError(403, 'FORBIDDEN', 'אין הרשאה לאחת הכיתות');
+        }
+      } else {
+        requestedClassIds = scopedClassIds;
+      }
+    }
+
+    if (requestedClassIds && requestedClassIds.length === 0) {
+      res.json({ items: [] });
+      return;
+    }
+
+    // שלב 1: המבחנים שעונים על הסינון (classId, subjectId, termId נמצאים ב-Assessment)
+    const assessmentFilter: Record<string, unknown> = { institutionId };
+    if (assessmentId) assessmentFilter._id = assessmentId;
+    if (subjectId) assessmentFilter.subjectId = subjectId;
+    if (termId) assessmentFilter.termId = termId;
+    if (requestedClassIds) assessmentFilter.classId = { $in: requestedClassIds };
+
+    const assessments = await Assessment.find(assessmentFilter).select('_id classId').lean();
+    const classByAssessment = new Map(assessments.map((a) => [String(a._id), String(a.classId)]));
+
+    // שלב 2: כל הציונים של אותם מבחנים, בשאילתה אחת
+    const grades = await Grade.find({
+      institutionId,
+      assessmentId: { $in: assessments.map((a) => a._id) },
+    }).lean();
+
+    // שלב 3: קיבוץ לפי הכיתה של המבחן
+    const byClass = new Map<string, Array<number | null | undefined>>();
+    for (const g of grades) {
+      const classId = classByAssessment.get(String(g.assessmentId));
+      if (!classId) continue;
+      if (!byClass.has(classId)) byClass.set(classId, []);
+      byClass.get(classId)!.push(g.score);
+    }
+
+    const items = [...byClass.entries()].map(([classId, scores]) => {
+      const s = summarize(scores);
+      return { classId, average: s.average, median: s.median, studentCount: s.count };
+    });
+
+    res.json({ items });
   }),
 );
 
