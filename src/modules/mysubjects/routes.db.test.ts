@@ -8,7 +8,9 @@ import { stfMail } from '../../seed/names';
 import { seedShared } from '../../seed/shared';
 
 // Integration test: runs only when MONGODB_URI_TEST is set (a local MongoDB or the CI service).
-const uri = process.env.MONGODB_URI_TEST;
+// Its own database (<name>_g08): the test files run in parallel, and another file's
+// dropDatabase would delete this file's users in the middle of its tests.
+const uri = process.env.MONGODB_URI_TEST?.replace(/\/([^/?]+)(\?|$)/, '/$1_g08$2');
 const describeDb = uri ? describe : describe.skip;
 
 describeDb('GET /api/me/teaching (with a database)', () => {
