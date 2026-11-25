@@ -15,7 +15,9 @@ describe('GET /api/assessments/:id/grades (without a database)', () => {
   });
 
   it('rejects a role without access to G01', async () => {
-    const res = await request(app).get(URL).set('Authorization', `Bearer ${token(['parent'])}`);
+    const res = await request(app)
+      .get(URL)
+      .set('Authorization', `Bearer ${token(['parent'])}`);
     expect(res.status).toBe(403);
   });
 
