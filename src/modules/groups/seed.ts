@@ -1,4 +1,11 @@
-import { AcademicYear, Institution, SchoolClass, StaffProfile, Student, Subject } from '../../models';
+import {
+  AcademicYear,
+  Institution,
+  SchoolClass,
+  StaffProfile,
+  Student,
+  Subject,
+} from '../../models';
 import { Group, GroupMember } from './model';
 
 export async function seed(): Promise<void> {
@@ -37,7 +44,7 @@ export async function seed(): Promise<void> {
       teacherId: mathTeacher.userId,
     },
     {
-      name: "קבוצת אנגלית מתקדמים",
+      name: 'קבוצת אנגלית מתקדמים',
       gradeLevel: null,
       subjectId: eng._id,
       teacherId: englishTeacher.userId,
@@ -65,7 +72,11 @@ export async function seed(): Promise<void> {
   }
 
   // שיוך תלמידים - תלמידי ז1 ו-ז2 לקבוצת מתמטיקה
-  const group = await Group.findOne({ institutionId: inst._id, yearId: ay._id, name: "הקבצה א' מתמטיקה" });
+  const group = await Group.findOne({
+    institutionId: inst._id,
+    yearId: ay._id,
+    name: "הקבצה א' מתמטיקה",
+  });
   if (!group) return;
 
   const [studentsZ1, studentsZ2] = await Promise.all(

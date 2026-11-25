@@ -17,7 +17,10 @@ describe('groups (without a database)', () => {
     expect(createGroupSchema.safeParse({ name: 'שם תקין' }).success).toBe(true);
   });
   it('rejects an invalid body with the uniform error format', async () => {
-    const res = await request(app).post('/api/groups').set('Authorization', `Bearer ${token(['management'])}`).send({ name: '' });
+    const res = await request(app)
+      .post('/api/groups')
+      .set('Authorization', `Bearer ${token(['management'])}`)
+      .send({ name: '' });
     // management must have write access to S04 in src/permissions/matrix.json; otherwise this is 403
     expect([400, 403]).toContain(res.status);
   });

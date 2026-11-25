@@ -21,7 +21,14 @@ router.get(
       Group.find(filter).sort({ name: 1 }).skip(skip).limit(size).lean(),
       Group.countDocuments(filter),
     ]);
-    res.json(toPage(items.map((i) => ({ id: String(i._id), name: i.name })), total, page, size));
+    res.json(
+      toPage(
+        items.map((i) => ({ id: String(i._id), name: i.name })),
+        total,
+        page,
+        size,
+      ),
+    );
   }),
 );
 
@@ -59,7 +66,10 @@ router.delete(
   authorize('S04', 'write'),
   asyncHandler(async (req, res) => {
     if (!Types.ObjectId.isValid(req.params.id)) throw new AppError(400, 'BAD_ID', 'מזהה לא תקין');
-    const removed = await Group.findOneAndDelete({ _id: req.params.id, institutionId: req.user!.institutionId });
+    const removed = await Group.findOneAndDelete({
+      _id: req.params.id,
+      institutionId: req.user!.institutionId,
+    });
     if (!removed) throw new AppError(404, 'NOT_FOUND', 'הרשומה לא נמצאה');
     res.status(204).end();
   }),
