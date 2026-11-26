@@ -46,7 +46,9 @@ describe('GET /api/staff/available', () => {
   });
 
   it('returns 403 to a teacher, who has no access to T03', async () => {
-    const res = await request(app).get(URL).set('Authorization', `Bearer ${tokenFor('teacher')}`);
+    const res = await request(app)
+      .get(URL)
+      .set('Authorization', `Bearer ${tokenFor('teacher')}`);
     expect(res.status).toBe(403);
     expect(res.body.error.code).toBe('FORBIDDEN');
   });
