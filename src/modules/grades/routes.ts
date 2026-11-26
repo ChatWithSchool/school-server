@@ -1,8 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { Types } from 'mongoose';
 import { Student } from '../../models/student.model';
-import { Assessment } from '../../models/assessment.model';
-import { Grade } from '../../models/grade.model';
+import { Assessment, Grade } from '../../models';
 import { GradeFeedback } from '../../models/gradeFeedback.model';
 import { authorize } from '../../middleware/authorize';
 import { AppError } from '../../utils/AppError';
@@ -35,6 +34,46 @@ function calculateTrend(entries: GradeEntry[]): 'up' | 'down' | 'flat' {
   return 'flat';
 }
 
+// GET /api/assessments/:id/grades
+router.get(
+  '/assessments/:id/grades',
+  authorize('G01', 'read'),
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    if (!Types.ObjectId.isValid(id)) throw new AppError(400, 'BAD_ID', 'מזהה לא תקין');
+
+    const institutionId = req.user!.institutionId;
+
+    // the assessment must exist in the user's institution
+    const assessment = await Assessment.findOne({ _id: id, institutionId })
+      .select('classId')
+      .lean();
+    if (!assessment) throw new AppError(404, 'NOT_FOUND', 'המבחן לא נמצא');
+
+    // "scoped": a teacher sees only assessments of her own classes
+    if (req.accessLevel === 'scoped') {
+      const classIds = await getScopedClassIds(req.user!.id);
+      const allowed = classIds.some((c) => String(c) === String(assessment.classId));
+      if (!allowed) throw new AppError(404, 'NOT_FOUND', 'המבחן לא נמצא');
+    }
+
+    const grades = await Grade.find({ assessmentId: id, institutionId })
+      .sort({ studentId: 1 })
+      .lean();
+
+    const items = grades.map((g) => ({
+      id: String(g._id),
+      assessmentId: String(g.assessmentId),
+      studentId: String(g.studentId),
+      score: g.score ?? null,
+      updatedBy: String(g.updatedBy),
+      updatedAt: g.updatedAt,
+    }));
+
+    res.json({ items });
+  }),
+);
+
 // GET /api/students/:id/grades?term=
 router.get(
   '/students/:id/grades',
@@ -60,7 +99,7 @@ router.get(
     // הרשאות scoped: התלמיד עצמו, אפוטרופוס שלו, או כיתה שבטווח של המורה/המחנכת
     if (req.accessLevel === 'scoped') {
       const userId = req.user!.id;
-      const isSelf = String(student.userId) === userId; 
+      const isSelf = String(student.userId) === userId;
       const isGuardian = (student.guardians ?? []).some(
         (g) => g.userId && String(g.userId) === userId,
       );
@@ -124,9 +163,13 @@ router.get(
         grades: entries,
         feedback: feedbackDocs
           .filter((f) => gradeIds.has(String(f.gradeId)))
-          .map((f) => ({ authorId: String(f.authorId), text: f.text, createdAt: f.createdAt })),     
-      };   
-     });
+          .map((f) => ({
+            authorId: String(f.authorId),
+            text: f.text,
+            createdAt: f.createdAt,
+          })),
+      };
+    });
 
     res.json({ studentId: id, termId: termId ?? null, subjects });
   }),
