@@ -60,7 +60,7 @@ router.get(
     // הרשאות scoped: התלמיד עצמו, אפוטרופוס שלו, או כיתה שבטווח של המורה/המחנכת
     if (req.accessLevel === 'scoped') {
       const userId = req.user!.id;
-      const isSelf = id === userId;
+      const isSelf = String(student.userId) === userId; 
       const isGuardian = (student.guardians ?? []).some(
         (g) => g.userId && String(g.userId) === userId,
       );
@@ -124,9 +124,9 @@ router.get(
         grades: entries,
         feedback: feedbackDocs
           .filter((f) => gradeIds.has(String(f.gradeId)))
-          .map((f) => ({ gradeId: String(f.gradeId), text: f.text, createdAt: f.createdAt })),
-      };
-    });
+          .map((f) => ({ authorId: String(f.authorId), text: f.text, createdAt: f.createdAt })),     
+      };   
+     });
 
     res.json({ studentId: id, termId: termId ?? null, subjects });
   }),

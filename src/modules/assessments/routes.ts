@@ -139,7 +139,13 @@ router.get(
 
     const items = [...byClass.entries()].map(([classId, scores]) => {
       const s = summarize(scores);
-      return { classId, average: s.average, median: s.median, studentCount: s.count };
+      return {
+        classId,
+        average: s.average,
+        median: s.median,
+        studentCount: s.count,
+        representative: s.representative,
+      };
     });
 
     res.json({ items });

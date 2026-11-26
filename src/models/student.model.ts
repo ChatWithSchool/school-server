@@ -19,6 +19,7 @@ const studentSchema = new Schema(
     nationalId: { type: String, required: true, trim: true },
     birthDate: { type: Date },
     classId: { type: Schema.Types.ObjectId, ref: 'SchoolClass', index: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', index: true },
     guardians: { type: [guardianSchema], default: [] },
     address: { type: String, trim: true },
     notes: { type: String, trim: true },
