@@ -29,9 +29,7 @@ export async function seed(): Promise<void> {
     throw new Error('נתוני G03 דורשים את מוסד הדוגמה. יש להריץ seedCore() לפני seed המודולים.');
   }
 
-  const seededIds = Array.from({ length: RECORD_COUNTS.many }, (_, index) =>
-    seedId(index + 1),
-  );
+  const seededIds = Array.from({ length: RECORD_COUNTS.many }, (_, index) => seedId(index + 1));
 
   if (recordCount === 0) {
     await GradeHistory.deleteMany({ institutionId: institution._id, _id: { $in: seededIds } });
